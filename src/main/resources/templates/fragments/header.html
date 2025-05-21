@@ -1,26 +1,47 @@
-<!-- templates/fragments/header.html -->
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-<div th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-light shadow-sm" style="background-color: #e7f7ed;">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold text-success" th:href="@{/dashboard}">
-                <i class="fas fa-seedling me-2"></i>PlantNest
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-                <span class="navbar-toggler-icon"></span>
+<header class="d-flex justify-content-between align-items-center px-4 py-3 bg-light shadow-sm">
+    <!-- Logo -->
+    <a href="/" class="navbar-brand fw-bold text-success fs-4">
+        <i class="fas fa-seedling me-2"></i>PlantNest
+    </a>
+
+    <!-- Icon Navigation -->
+    <div class="d-flex gap-4 align-items-center">
+        <!-- Dashboard -->
+        <a th:href="@{/dashboard}" class="text-dark text-decoration-none" title="Dashboard">
+            <i class="fas fa-home fa-lg"></i>
+        </a>
+
+        <!-- My Orders -->
+        <a th:href="@{/orders}" class="text-dark text-decoration-none" title="My Orders">
+            <i class="fas fa-box fa-lg"></i>
+        </a>
+
+        <!-- Shop -->
+        <a th:href="@{/shop}" class="text-dark text-decoration-none" title="Shop">
+            <i class="fas fa-store fa-lg"></i>
+        </a>
+
+        <!-- Profile -->
+        <a th:href="@{/profile}" class="text-dark text-decoration-none" title="Profile">
+            <i class="fas fa-user fa-lg"></i>
+        </a>
+
+        <!-- Cart -->
+        <a th:href="@{/cart}" class="position-relative text-dark text-decoration-none" title="Cart">
+            <i class="fas fa-shopping-cart fa-lg"></i>
+            <span id="cart-count"
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                  th:if="${cartCount > 0}"
+                  th:text="${cartCount}">
+                0
+            </span>
+        </a>
+
+        <!-- Logout -->
+        <form th:action="@{/logout}" method="post" class="d-inline">
+            <button type="submit" class="btn btn-outline-success btn-sm" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
             </button>
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/dashboard}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/orders}">My Orders</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/shop}">Shop</a></li>
-                </ul>
-                <a th:href="@{/logout}" class="btn btn-outline-success btn-sm">Logout</a>
-            </div>
-        </div>
-    </nav>
-</div>
-</body>
-</html>
+        </form>
+    </div>
+</header>

@@ -1,19 +1,19 @@
-<!-- templates/fragments/layout.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>PlantNest</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
-    <link rel="stylesheet" th:href="@{/css/styles.css}" />
-    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/cart.js"></script>
 </head>
 <body>
 <div th:fragment="layout(content)">
     <div th:replace="fragments/header :: header"></div>
-
     <main class="container my-4">
-        <div th:insert="${content}"></div>
+        <div th:replace="${content}"></div>
     </main>
 </div>
 </body>

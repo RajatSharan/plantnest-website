@@ -22,11 +22,11 @@ public class AuthController {
     }
 
     // Show registration form
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new User());
-        return "register";
-    }
+@GetMapping("/register")
+public String showRegistrationForm(Model model) {
+    model.addAttribute("user", new User());
+    return "register"; // loads register.html
+}
 
     // Handle registration form submission
     @PostMapping("/register")

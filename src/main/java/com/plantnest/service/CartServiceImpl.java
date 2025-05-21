@@ -3,7 +3,7 @@ package com.plantnest.service;
 import com.plantnest.model.CartItem;
 import com.plantnest.model.Plant;
 import com.plantnest.model.User;
-import com.plantnest.repository.CartRepository;
+import com.plantnest.repository.CartItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +13,8 @@ import java.util.Optional;
 @Service
 public class CartServiceImpl implements CartService {
 
-    @Autowired
-    private CartRepository cartRepository;
+   @Autowired
+private CartItemRepository cartRepository;
 
     @Override
     public void addToCart(User user, Plant plant) {
@@ -48,5 +48,20 @@ public class CartServiceImpl implements CartService {
     @Override
     public void clearCart(User user) {
         cartRepository.deleteByUser(user);
+    }
+
+    @Override
+    public void updateCartItemQuantity(Long itemId, int quantity) {
+        Optional<CartItem> optionalItem = cartRepository.findById(itemId);
+        if (optionalItem.isPresent()) {
+            CartItem item = optionalItem.get();
+            item.setQuantity(quantity);
+            cartRepository.save(item);
+        }
+    }
+
+    @Override
+    public void removeCartItem(Long itemId) {
+        cartRepository.deleteById(itemId);
     }
 }

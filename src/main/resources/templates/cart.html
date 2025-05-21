@@ -1,59 +1,84 @@
-<!-- cart.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Cart</title>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
 <body>
-<div th:fragment="content">
+<div th:replace="fragments/layout :: layout(~{::content})">
+    <div th:fragment="content">
+        <div class="container py-4">
+            <h2 class="mb-4">My Cart</h2>
 
-    <div class="container">
-        <h3 class="text-success mb-4">🛒 Your Cart</h3>
-
-        <!-- If cart is empty -->
-        <div th:if="${#lists.isEmpty(cartItems)}" class="text-center text-muted mt-4">
-            <p>Your cart is empty. <a th:href="@{/dashboard}" class="text-success">Continue Shopping</a></p>
-        </div>
-
-        <!-- If cart has items -->
-        <div th:if="${not #lists.isEmpty(cartItems)}">
-            <div class="table-responsive">
+            <div th:if="${cartItems != null and !cartItems.isEmpty()}">
                 <table class="table table-bordered align-middle">
-                    <thead class="table-success">
-                    <tr class="text-center">
-                        <th>Plant</th>
-                        <th>Image</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Subtotal</th>
-                    </tr>
+                    <thead class="table-light">
+                        <tr>
+                            <th>Plant</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th>Action</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="item : ${cartItems}">
-                        <td th:text="${item.plant.name}">Plant</td>
-                        <td>
-                            <img th:src="@{'/images/' + ${item.plant.image}}" alt="Image" width="60" class="rounded">
-                        </td>
-                        <td class="text-center" th:text="${item.quantity}">1</td>
-                        <td th:text="${item.plant.price}">$0.00</td>
-                        <td th:text="${item.plant.price * item.quantity}">$0.00</td>
-                    </tr>
+                        <tr th:each="item : ${cartItems}">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img th:src="@{'/images/' + ${item.plant.image}}" alt="Plant" class="img-thumbnail me-2" style="width: 60px; height: 60px;">
+                                    <span th:text="${item.plant.name}">Plant Name</span>
+                                </div>
+                                <p class="text-muted small mt-1">Est. delivery: 3–5 days</p>
+                            </td>
+                            <td>$<span th:text="${#numbers.formatDecimal(item.plant.price, 1, 'COMMA', 2, 'POINT')}">0.00</span></td>
+                            <td>
+                                <div class="input-group" style="max-width: 120px;">
+                                    <button class="btn btn-outline-secondary btn-sm quantity-btn decrease" type="button" th:attr="data-item-id=${item.id}">−</button>
+                                    <input type="text" class="form-control text-center" th:value="${item.quantity}" readonly th:attr="data-item-id=${item.id}">
+                                    <button class="btn btn-outline-secondary btn-sm quantity-btn increase" type="button" th:attr="data-item-id=${item.id}">+</button>
+                                </div>
+                            </td>
+                            <td>$<span th:text="${#numbers.formatDecimal(item.plant.price * item.quantity, 1, 'COMMA', 2, 'POINT')}">0.00</span></td>
+                            <td>
+                                <button class="btn btn-outline-danger btn-sm remove-item-btn" type="button"
+                                        th:attr="data-item-id=${item.id}" title="Remove">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
-            </div>
 
-            <!-- Total -->
-            <div class="text-end fw-bold mb-3">
-                Total: $
-                <span th:text="${#numbers.formatDecimal(totalPrice, 1, 'POINT', 2, 'NONE')}">0.00</span>
-            </div>
-
-            <!-- Place Order -->
-            <form method="post" action="/cart/place-order">
-                <div class="text-center">
-                    <button type="submit" class="btn btn-success px-4 py-2">Place Order</button>
+                <div class="text-end">
+                    <p class="mb-1 fw-semibold">Subtotal: $<span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                    <p class="mb-1 text-muted">Tax (5%): $<span th:text="${#numbers.formatDecimal(totalPrice * 0.05, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                    <h5>Total: $<span id="total-price" th:text="${#numbers.formatDecimal(totalPrice * 1.05, 1, 'COMMA', 2, 'POINT')}">0.00</span></h5>
                 </div>
-            </form>
+
+                <!-- ✅ Updated redirect target here -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Continue Shopping
+                    </a>
+                    <form th:action="@{/cart/place-order}" method="post">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                        <button class="btn btn-success">Place Order</button>
+                    </form>
+                </div>
+            </div>
+
+            <div th:if="${cartItems == null or cartItems.isEmpty()}" class="alert alert-info mt-4">
+                Your cart is empty.
+            </div>
         </div>
     </div>
-
 </div>
+
+<script src="/js/cart.js"></script>
 </body>
 </html>

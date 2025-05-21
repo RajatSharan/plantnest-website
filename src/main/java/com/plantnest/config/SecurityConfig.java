@@ -23,17 +23,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/", "/home", "/shop", "/about", "/contact", "/search",
-                                "/register", "/login", "/subscribe",
-                                "/css/**", "/js/**", "/images/**"
-                        ).permitAll()
-                        .requestMatchers(
-                                "/dashboard", "/cart", "/profile", "/place-order"
-                        ).authenticated()
-                        .anyRequest().authenticated()
-                )
+    .authorizeHttpRequests(auth -> auth
+    .requestMatchers(
+        "/", "/home", "/shop", "/about", "/contact", "/search",
+        "/register", "/login", "/subscribe",
+        "/css/**", "/js/**", "/images/**"
+    ).permitAll()
+    .anyRequest().authenticated()
+)
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/do-login")
@@ -47,6 +44,12 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
+                )
+                .rememberMe(remember -> remember
+                        .key("uniqueAndSecretKey") // Use a strong key in production!
+                        .userDetailsService(customUserDetailsService)
+                        .rememberMeParameter("remember-me")
+                        .tokenValiditySeconds(1209600) // 14 days
                 )
                 .sessionManagement(session -> session
                         .maximumSessions(1)
