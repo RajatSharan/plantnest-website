@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Shop</title>
+</head>
+<body>
+<h1>All Plants</h1>
+<ul>
+    <li th:each="plant : ${plants}">
+        <a th:href="@{/plants/view/{id}(id=${plant.id})}" th:text="${plant.name}">Plant Name</a>
+    </li>
+</ul>
+<a href="/plants/add">Add New Plant</a>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!-- templates/fragments/header.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-light shadow-sm" style="background-color: #e7f7ed;">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold text-success" th:href="@{/dashboard}">
+                <i class="fas fa-seedling me-2"></i>PlantNest
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/dashboard}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/orders}">My Orders</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/shop}">Shop</a></li>
+                </ul>
+                <a th:href="@{/logout}" class="btn btn-outline-success btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>

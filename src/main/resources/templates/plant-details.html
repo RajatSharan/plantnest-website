@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Plant Details</title>
+</head>
+<body>
+<h2 th:text="${plant.name}">Plant Name</h2>
+<p><strong>Type:</strong> <span th:text="${plant.type}"></span></p>
+<p><strong>Price:</strong> $<span th:text="${plant.price}"></span></p>
+<p><strong>Description:</strong> <span th:text="${plant.description}"></span></p>
+
+<a href="/plants/shop">Back to Shop</a>
+</body>
+</html>

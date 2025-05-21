@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+        }
+
+        .register-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .register-image {
+            flex: 1;
+            background: url('/images/register-bg.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        .register-form-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            padding: 40px;
+        }
+
+        .form-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group.checkbox {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group.checkbox input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, #14532d, #84cc16);
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .register-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .social-login {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .social-login button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            text-decoration: none;
+            color: #1d4ed8;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="register-container">
+    <div class="register-image"></div>
+    <div class="register-form-container">
+        <div class="form-box">
+            <h2>Register</h2>
+            <form th:action="@{/register}" th:object="${user}" method="post">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Full Name" th:field="*{username}" required />
+                    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="email" placeholder="Email or Phone Number" th:field="*{email}" required />
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" th:field="*{password}" required />
+                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" th:field="*{confirmPassword}" required />
+                </div>
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="terms" />
+                    <label for="terms">I agree to the terms and conditions</label>
+                </div>
+                <button type="submit" class="register-button" id="registerBtn" disabled>Register</button>
+            </form>
+
+            <div class="social-login">
+                <p>Register in with</p>
+                <button>G</button>
+                <button>f</button>
+            </div>
+
+            <div class="login-link">
+                Already have an account? <a th:href="@{/login}">Log in</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const username = document.getElementById("username");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const terms = document.getElementById("terms");
+        const registerBtn = document.getElementById("registerBtn");
+
+        function validateForm() {
+            const isValid = username.value.trim() &&
+                email.value.trim() &&
+                password.value.trim() &&
+                confirmPassword.value.trim() &&
+                terms.checked;
+
+            registerBtn.disabled = !isValid;
+        }
+
+        [username, email, password, confirmPassword].forEach(input => {
+            input.addEventListener("input", validateForm);
+        });
+
+        terms.addEventListener("change", validateForm);
+    });
+</script>
+
+</body>
+</html>

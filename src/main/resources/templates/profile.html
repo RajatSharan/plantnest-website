@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Update Profile - PlantNest</title>
+</head>
+<body>
+<!-- ✅ Injects into layout.html -->
+<div th:replace="fragments/header :: header(${user}, ${cartCount}, ${query})"></div>
+
+    <div class="container" style="max-width: 600px; margin: 3rem auto; background: rgba(255, 255, 255, 0.08); padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); color: white;">
+        <form th:action="@{/profile/update}" th:object="${user}" method="post">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="row">
+                <!-- Profile Left -->
+                <div class="col-md-4 text-center mb-3">
+                    <img src="/images/default-profile.png" alt="Profile Picture"
+                         style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; margin-bottom: 1rem;">
+                    <h5 th:text="${user.firstName + ' ' + user.lastName}">User Name</h5>
+                </div>
+
+                <!-- Profile Right -->
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" th:field="*{email}" class="form-control" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>First Name</label>
+                        <input type="text" th:field="*{firstName}" class="form-control" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Last Name</label>
+                        <input type="text" th:field="*{lastName}" class="form-control" required>
+                        <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="togglePassword">
+                        <label class="form-check-label" for="togglePassword">Change Password</label>
+                    </div>
+
+                    <div class="mb-3" id="passwordField" style="display:none;">
+                        <label>New Password</label>
+                        <input type="password" th:field="*{password}" class="form-control">
+                    </div>
+
+                    <button class="btn btn-success" type="submit">Update Profile</button>
+                    <a th:href="@{/dashboard}" class="btn btn-link text-light">Cancel and go back</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById("togglePassword").addEventListener("change", function () {
+        document.getElementById("passwordField").style.display = this.checked ? "block" : "none";
+    });
+</script>
+</body>
+</html>
