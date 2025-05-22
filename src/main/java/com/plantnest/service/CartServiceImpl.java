@@ -13,8 +13,8 @@ import java.util.Optional;
 @Service
 public class CartServiceImpl implements CartService {
 
-   @Autowired
-private CartItemRepository cartRepository;
+    @Autowired
+    private CartItemRepository cartRepository;
 
     @Override
     public void addToCart(User user, Plant plant) {
@@ -63,5 +63,19 @@ private CartItemRepository cartRepository;
     @Override
     public void removeCartItem(Long itemId) {
         cartRepository.deleteById(itemId);
+    }
+
+    // ✅ New method required for checkout page
+    @Override
+    public List<CartItem> getCartItems(User user) {
+        return cartRepository.findByUser(user);
+    }
+
+    // ✅ New method required for checkout total
+    @Override
+    public double getCartTotal(User user) {
+        return getCartItems(user).stream()
+                .mapToDouble(item -> item.getPlant().getPrice() * item.getQuantity())
+                .sum();
     }
 }

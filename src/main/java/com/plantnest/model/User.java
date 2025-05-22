@@ -13,7 +13,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // ✅ You were missing this
+    private Long id;
 
     @NotBlank
     private String username;
@@ -38,11 +38,13 @@ public class User {
     @Transient
     private String newPassword;
 
-    // ✅ Orders placed by the user
+    private String address;
+
+    // Orders placed by the user
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
 
-    // ✅ Recent activities of the user
+    // Recent activities of the user
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Activity> activities = new ArrayList<>();
 
@@ -72,6 +74,9 @@ public class User {
 
     public String getNewPassword() { return newPassword; }
     public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
+
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
     public List<Order> getOrders() { return orders; }
     public void setOrders(List<Order> orders) { this.orders = orders; }

@@ -28,7 +28,16 @@ public class CartController {
     @Autowired
     private UserService userService;
 
-    // ✅ Handles AJAX "Add to Cart"
+    // Helper method to get user by email or username
+    private Optional<User> getUser(UserDetails userDetails) {
+        Optional<User> userOpt = userService.findByEmail(userDetails.getUsername());
+        if (userOpt.isEmpty()) {
+            userOpt = userService.findByUsername(userDetails.getUsername());
+        }
+        return userOpt;
+    }
+
+    // Handles AJAX "Add to Cart"
     @PostMapping("/add-to-cart/{plantId}")
     @ResponseBody
     public Map<String, Object> addToCartAjax(@PathVariable Long plantId,
@@ -39,7 +48,7 @@ public class CartController {
             return result;
         }
 
-        Optional<User> optionalUser = userService.findByEmail(userDetails.getUsername());
+        Optional<User> optionalUser = getUser(userDetails);
         Optional<Plant> optionalPlant = plantService.getPlantById(plantId);
 
         if (optionalUser.isPresent() && optionalPlant.isPresent()) {
@@ -51,12 +60,12 @@ public class CartController {
         return result;
     }
 
-    // ✅ Handles /cart page
+    // Handles /cart page
     @GetMapping("/cart")
     public String viewCart(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) return "redirect:/login";
 
-        Optional<User> optionalUser = userService.findByEmail(userDetails.getUsername());
+        Optional<User> optionalUser = getUser(userDetails);
         if (optionalUser.isEmpty()) return "redirect:/login";
 
         User user = optionalUser.get();
@@ -77,7 +86,7 @@ public class CartController {
         return "cart"; // Renders templates/cart.html
     }
 
-    // ✅ AJAX: Update quantity
+    // AJAX: Update quantity
     @PostMapping("/cart/update-quantity")
     @ResponseBody
     public Map<String, Object> updateQuantity(@RequestParam Long itemId,
@@ -89,7 +98,7 @@ public class CartController {
             return response;
         }
 
-        Optional<User> userOpt = userService.findByEmail(userDetails.getUsername());
+        Optional<User> userOpt = getUser(userDetails);
         if (userOpt.isPresent()) {
             cartService.updateCartItemQuantity(itemId, quantity);
             User user = userOpt.get();
@@ -101,11 +110,13 @@ public class CartController {
             response.put("success", true);
             response.put("cartCount", cartService.countCartItemsByUser(user));
             response.put("totalPrice", total);
+        } else {
+            response.put("success", false);
         }
         return response;
     }
 
-    // ✅ AJAX: Remove cart item
+    // AJAX: Remove cart item
     @PostMapping("/cart/remove/{id}")
     @ResponseBody
     public Map<String, Object> removeCartItem(@PathVariable Long id,
@@ -116,8 +127,19 @@ public class CartController {
             return result;
         }
 
-        cartService.removeCartItem(id);
-        result.put("success", true);
+        Optional<User> userOpt = getUser(userDetails);
+        if (userOpt.isPresent()) {
+            cartService.removeCartItem(id);
+            result.put("success", true);
+        } else {
+            result.put("success", false);
+        }
         return result;
+    }
+
+    // Optional: Handle GET on /cart/place-order gracefully
+    @GetMapping("/cart/place-order")
+    public String handleGetPlaceOrder() {
+        return "redirect:/cart";
     }
 }

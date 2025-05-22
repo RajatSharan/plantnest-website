@@ -1,6 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
+    // Buy Now / Add to Cart
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const productId = btn.getAttribute('data-id');
+            fetch(`/add-to-cart/${productId}`, {
+                method: 'POST',
+                headers: csrfHeader && csrfToken ? { [csrfHeader]: csrfToken } : {}
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.cartCount !== undefined) {
+                    const cartCountElem = document.getElementById('cart-count');
+                    if (cartCountElem) cartCountElem.textContent = data.cartCount;
+                }
+            });
+        });
+    });
 
     // Quantity change
     document.querySelectorAll('.quantity-btn').forEach(btn => {
@@ -16,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    [csrfHeader]: csrfToken
+                    ...(csrfHeader && csrfToken ? { [csrfHeader]: csrfToken } : {})
                 },
                 body: `itemId=${itemId}&quantity=${quantity}`
             })
@@ -24,8 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.success) {
                     input.value = quantity;
-                    document.getElementById('cart-count').textContent = data.cartCount;
-                    document.getElementById('total-price').textContent = data.totalPrice.toFixed(2);
+                    const cartCountElem = document.getElementById('cart-count');
+                    if (cartCountElem && data.cartCount !== undefined) cartCountElem.textContent = data.cartCount;
+                    if (data.totalPrice !== undefined) {
+                        const totalElem = document.getElementById('total-price');
+                        if (totalElem) totalElem.textContent = data.totalPrice.toFixed(2);
+                    }
                     location.reload(); // Optionally replace with DOM update
                 }
             });
@@ -38,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const itemId = btn.getAttribute('data-item-id');
             fetch(`/cart/remove/${itemId}`, {
                 method: 'POST',
-                headers: { [csrfHeader]: csrfToken }
+                headers: csrfHeader && csrfToken ? { [csrfHeader]: csrfToken } : {}
             })
             .then(res => res.json())
             .then(data => {

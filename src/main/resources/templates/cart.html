@@ -60,15 +60,12 @@
                     <h5>Total: $<span id="total-price" th:text="${#numbers.formatDecimal(totalPrice * 1.05, 1, 'COMMA', 2, 'POINT')}">0.00</span></h5>
                 </div>
 
-                <!-- ✅ Updated redirect target here -->
+                <!-- ✅ Place Order is now a link to /checkout -->
                 <div class="d-flex justify-content-between mt-4">
                     <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-1"></i> Continue Shopping
                     </a>
-                    <form th:action="@{/cart/place-order}" method="post">
-                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-                        <button class="btn btn-success">Place Order</button>
-                    </form>
+                    <a th:href="@{/checkout}" class="btn btn-success">Place Order</a>
                 </div>
             </div>
 

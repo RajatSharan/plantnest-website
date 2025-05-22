@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Checkout - PlantNest</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 { color: #14532d; }
+        label { font-weight: bold; }
+        input[type="text"], input[type="number"], input[type="password"], select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .total {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .btn {
+            background-color: #22c55e;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .success-msg {
+            background-color: #bbf7d0;
+            border: 1px solid #4ade80;
+            padding: 15px;
+            border-radius: 6px;
+            color: #166534;
+            font-weight: 500;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-fields {
+            display: none;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        function toggleCardFields() {
+            var paymentMethod = document.getElementById('paymentMethod').value;
+            var cardFields = document.getElementById('card-fields');
+            if (paymentMethod === 'Card') {
+                cardFields.style.display = 'block';
+                // Make card fields required
+                document.getElementById('cardNumber').required = true;
+                document.getElementById('expiry').required = true;
+                document.getElementById('cvv').required = true;
+            } else {
+                cardFields.style.display = 'none';
+                // Remove required attribute
+                document.getElementById('cardNumber').required = false;
+                document.getElementById('expiry').required = false;
+                document.getElementById('cvv').required = false;
+            }
+        }
+        window.onload = function() {
+            toggleCardFields();
+            document.getElementById('paymentMethod').addEventListener('change', toggleCardFields);
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>Checkout</h2>
+
+    <!-- Always show the green message box -->
+    <div class="success-msg">
+        <p th:text="${success != null and #strings.length(success) > 0 ? success : 'Review your order and place it below.'}">Review your order and place it below.</p>
+    </div>
+
+    <!-- Checkout form -->
+    <form th:action="@{/checkout/place-order}" method="post">
+        <label>Shipping Address</label>
+        <input type="text" name="shippingAddress" th:value="${user != null ? user.address : ''}" required />
+
+        <label>Delivery Option</label>
+        <select name="deliveryOption" required>
+            <option value="Standard">Standard (3-5 Days)</option>
+            <option value="Express">Express (1-2 Days)</option>
+        </select>
+
+        <label>Payment Method</label>
+        <select name="paymentMethod" id="paymentMethod" required>
+            <option value="COD">Cash on Delivery</option>
+            <option value="UPI">UPI</option>
+            <option value="Card">Credit/Debit Card</option>
+        </select>
+
+        <!-- Card details fields, shown only if Card is selected -->
+        <div id="card-fields" class="card-fields">
+            <label>Card Number</label>
+            <input type="text" id="cardNumber" name="cardNumber" maxlength="19" pattern="\d{16,19}" placeholder="Enter card number" />
+
+            <label>Expiry Date</label>
+            <input type="text" id="expiry" name="expiry" maxlength="5" pattern="(0[1-9]|1[0-2])\/\d{2}" placeholder="MM/YY" />
+
+            <label>CVV</label>
+            <input type="password" id="cvv" name="cvv" maxlength="4" pattern="\d{3,4}" placeholder="CVV" />
+        </div>
+
+        <h3>Order Summary</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Plant</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartItems}">
+                    <td th:text="${item.plant.name}">Plant Name</td>
+                    <td th:text="${item.quantity}">1</td>
+                    <td>₹<span th:text="${item.plant.price}">0.0</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total">
+            Total: ₹<span th:text="${total}">0.0</span>
+        </div>
+
+        <button type="submit" class="btn">Place Order</button>
+    </form>
+</div>
+</body>
+</html>
