@@ -247,17 +247,17 @@
 <div class="checkout-container">
     <h2>Complete Your Order</h2>
 
-    <div th:if="${success != null}" class="alert alert-success alert-dismissible fade show alert-custom" role="alert">
+    <div th:if="${success != null and !#strings.isEmpty(success)}" class="alert alert-success alert-dismissible fade show alert-custom" role="alert">
         <i class="fas fa-check-circle me-2"></i>
         <span th:text="${success}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show alert-custom" role="alert">
+    <div th:if="${error != null and !#strings.isEmpty(error)}" class="alert alert-danger alert-dismissible fade show alert-custom" role="alert">
         <i class="fas fa-exclamation-triangle me-2"></i>
         <span th:text="${error}"></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    <div th:unless="${success != null || error != null}" class="alert alert-info alert-custom alert-info-green" role="alert">
+    <div th:if="${(success == null || #strings.isEmpty(success)) and (error == null || #strings.isEmpty(error))}" class="alert alert-info alert-custom alert-info-green" role="alert">
         <i class="fas fa-info-circle me-2"></i>
         Review your order details and complete the purchase.
     </div>

@@ -1,11 +1,11 @@
 package com.plantnest.controller;
 
-import com.plantnest.dto.ForgotPasswordRequest;
+
 import com.plantnest.service.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+
 
 @Controller
 public class ForgotPasswordController {

@@ -30,6 +30,17 @@ public class PlantNestUserServiceImpl implements PlantNestUserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
+    @Override
+    public boolean existsByEmail(String email) {
+    return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public void registerUser(User user) {
+    // Encode password before saving (important for login to work)
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    userRepository.save(user);
+}
 
     /**
      * This will encode plain-text passwords in the DB at startup.

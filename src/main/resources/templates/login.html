@@ -198,6 +198,10 @@
             You have been logged out successfully.
         </div>
 
+        <div th:if="${param.registered}" class="alert alert-success" role="alert">
+            Registration successful! Please sign in.
+        </div>
+
         <div th:if="${param.resetSent}" class="alert alert-info" role="alert">
             If an account exists, a password reset link has been sent to your email.
         </div>
