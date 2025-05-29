@@ -23,38 +23,42 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-    .authorizeHttpRequests(auth -> auth
-    .requestMatchers(
-        "/", "/home", "/shop", "/about", "/contact", "/search",
-        "/register", "/login", "/subscribe",
-        "/css/**", "/js/**", "/images/**"
-    ).permitAll()
-    .anyRequest().authenticated()
-)
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/do-login")
-                        .successHandler(customAuthenticationSuccessHandler())
-                        .failureUrl("/login?error=true")
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                )
-                .rememberMe(remember -> remember
-                        .key("uniqueAndSecretKey") // Use a strong key in production!
-                        .userDetailsService(customUserDetailsService)
-                        .rememberMeParameter("remember-me")
-                        .tokenValiditySeconds(1209600) // 14 days
-                )
-                .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(false)
-                );
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/", "/home", "/shop", "/about", "/contact", "/search",
+                    "/register", "/login", "/subscribe",
+                    "/forgot-password", // <--- ADDED THIS LINE
+                    "/reset-password",  // <--- ADDED THIS LINE
+                    "/css/**", "/js/**", "/images/**"
+                ).permitAll()
+                // Any other request not explicitly permitted above will require authentication.
+                // This includes paths like "/plants/{id}".
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/do-login")
+                .successHandler(customAuthenticationSuccessHandler())
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            )
+            .rememberMe(remember -> remember
+                .key("uniqueAndSecretKey") // Use a strong, unique key in production!
+                .userDetailsService(customUserDetailsService)
+                .rememberMeParameter("remember-me")
+                .tokenValiditySeconds(1209600) // 14 days
+            )
+            .sessionManagement(session -> session
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
+            );
 
         return http.build();
     }

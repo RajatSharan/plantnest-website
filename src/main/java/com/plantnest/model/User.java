@@ -4,12 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +51,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Activity> activities = new ArrayList<>();
 
+    // === ADD THIS FIELD ===
+    @Transient // Mark as transient if you don't want to persist it in the database
+    private String confirmPassword;
+    // ======================
+
     public User() {}
 
     // === Getters and Setters ===
@@ -83,4 +91,14 @@ public class User {
 
     public List<Activity> getActivities() { return activities; }
     public void setActivities(List<Activity> activities) { this.activities = activities; }
+
+    // === ADD THESE GETTER AND SETTER FOR confirmPassword ===
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+    // ========================================================
 }

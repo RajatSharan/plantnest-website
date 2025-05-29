@@ -4,6 +4,7 @@ import com.plantnest.model.CartItem;
 import com.plantnest.model.Plant;
 import com.plantnest.model.User;
 
+import java.math.BigDecimal; // IMPORTANT: Add this import
 import java.util.List;
 
 public interface CartService {
@@ -20,8 +21,7 @@ public interface CartService {
 
     void removeCartItem(Long itemId);
 
-    // ✅ Add these two for checkout
     List<CartItem> getCartItems(User user);
 
-    double getCartTotal(User user);
+    BigDecimal getCartTotal(User user); 
 }

@@ -8,15 +8,19 @@ import com.plantnest.service.PlantService;
 import com.plantnest.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Controller
+@ControllerAdvice
 public class CartController {
 
     @Autowired
@@ -30,11 +34,22 @@ public class CartController {
 
     // Helper method to get user by email or username
     private Optional<User> getUser(UserDetails userDetails) {
+        if (userDetails == null) return Optional.empty();
         Optional<User> userOpt = userService.findByEmail(userDetails.getUsername());
         if (userOpt.isEmpty()) {
             userOpt = userService.findByUsername(userDetails.getUsername());
         }
         return userOpt;
+    }
+
+    @ModelAttribute("cartItemCount")
+    public int addCartItemCount(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return 0;
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Optional<User> userOpt = getUser(userDetails);
+        return userOpt.map(cartService::countCartItemsByUser).orElse(0);
     }
 
     // Handles AJAX "Add to Cart"
@@ -71,10 +86,10 @@ public class CartController {
         User user = optionalUser.get();
         List<CartItem> cartItems = cartService.getCartItemsByUser(user);
 
-        double totalPrice = cartItems.stream()
-                .filter(item -> item.getPlant() != null)
-                .mapToDouble(item -> item.getPlant().getPrice() * item.getQuantity())
-                .sum();
+        BigDecimal totalPrice = cartItems.stream()
+                .filter(item -> item.getPlant() != null && item.getPlant().getPrice() != null)
+                .map(item -> item.getPlant().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         int cartCount = cartService.countCartItemsByUser(user);
 
@@ -83,7 +98,7 @@ public class CartController {
         model.addAttribute("cartCount", cartCount);
         model.addAttribute("user", user);
 
-        return "cart"; // Renders templates/cart.html
+        return "cart";
     }
 
     // AJAX: Update quantity
@@ -102,10 +117,12 @@ public class CartController {
         if (userOpt.isPresent()) {
             cartService.updateCartItemQuantity(itemId, quantity);
             User user = userOpt.get();
-            double total = cartService.getCartItemsByUser(user)
+
+            BigDecimal total = cartService.getCartItemsByUser(user)
                     .stream()
-                    .mapToDouble(i -> i.getPlant().getPrice() * i.getQuantity())
-                    .sum();
+                    .filter(item -> item.getPlant() != null && item.getPlant().getPrice() != null)
+                    .map(item -> item.getPlant().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             response.put("success", true);
             response.put("cartCount", cartService.countCartItemsByUser(user));

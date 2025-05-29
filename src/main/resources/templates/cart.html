@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-<div th:replace="fragments/layout :: layout(~{::content})">
-    <div th:fragment="content">
+<!-- Corrected layout reference: 3 arguments required -->
+<div th:replace="~{fragments/layout :: layout(~{::title}, ~{}, ~{::#content})}">
+    <div id="content">
         <div class="container py-4">
             <h2 class="mb-4">My Cart</h2>
 
@@ -60,7 +61,6 @@
                     <h5>Total: $<span id="total-price" th:text="${#numbers.formatDecimal(totalPrice * 1.05, 1, 'COMMA', 2, 'POINT')}">0.00</span></h5>
                 </div>
 
-                <!-- ✅ Place Order is now a link to /checkout -->
                 <div class="d-flex justify-content-between mt-4">
                     <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-1"></i> Continue Shopping
