@@ -19,7 +19,7 @@ public class Activity {
     private LocalDateTime timestamp = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")  // Must match User's @OneToMany(mappedBy = "user")
+    @JoinColumn(name = "user_id") 
     private User user;
 
     // Constructors

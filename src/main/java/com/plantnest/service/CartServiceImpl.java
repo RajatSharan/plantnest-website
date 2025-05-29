@@ -46,14 +46,13 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItem> getCartItemsByUser(User user) {
-        // --- DEBUG LOG START ---
+
         if (user != null) {
             System.out.println("DEBUG: getCartItemsByUser - Attempting to retrieve cart for User ID: " + user.getId() + ", Email: " + user.getEmail());
         } else {
             System.out.println("DEBUG: getCartItemsByUser - User is null, cannot retrieve cart!");
-            return List.of(); // Return empty list if user is null
+            return List.of(); 
         }
-        // --- DEBUG LOG END ---
         List<CartItem> items = cartRepository.findByUser(user);
         System.out.println("DEBUG: getCartItemsByUser - Found " + items.size() + " items for User ID: " + user.getId());
         return items;
@@ -108,7 +107,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItem> getCartItems(User user) {
-        // This method also calls findByUser, so logging is handled by getCartItemsByUser
         return getCartItemsByUser(user);
     }
 

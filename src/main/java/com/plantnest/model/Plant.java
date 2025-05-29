@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.math.BigDecimal; // Import BigDecimal
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "plant")
@@ -19,22 +19,21 @@ public class Plant implements Serializable {
     private String name;
 
     @NotBlank(message = "Image filename is required")
-    @Column(name = "image") // e.g., "SpiderPlant.jpg"
+    @Column(name = "image") 
     private String image;
 
     @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be non-negative")
-    private BigDecimal price; // Changed to BigDecimal
+    private BigDecimal price;
 
     @Column(name = "image_url")
-    private String imageUrl; // Optional: /images/filename.jpg
+    private String imageUrl;
 
     private String description;
 
-    // === Constructors ===
     public Plant() {}
 
-    // Update constructor to use BigDecimal
+
     public Plant(String name, String image, BigDecimal price, String imageUrl, String description) {
         this.name = name;
         this.image = image;
@@ -43,7 +42,6 @@ public class Plant implements Serializable {
         this.description = description;
     }
 
-    // === Getters and Setters ===
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -53,7 +51,6 @@ public class Plant implements Serializable {
     public String getImage() { return image; }
     public void setImage(String image) { this.image = image; }
 
-    // Getter and Setter for BigDecimal price
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }
 

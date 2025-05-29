@@ -31,24 +31,13 @@ public class UserService {
         }
         return userRepository.save(user);
     }
-
-    // New method for registering a user from the DTO
     @Transactional
     public User registerNewUser(RegistrationRequest request) {
-        // You might want to add more robust checks here before creating the user
-        // (e.g., if user already exists, throw a specific exception)
         User user = new User();
-        user.setUsername(request.getUsername()); // Assuming username is for Full Name
+        user.setUsername(request.getUsername()); 
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // Encode password before saving
-        user.setRole("USER"); // Assign a default role, if applicable to your User model
-
-        // If your User model has firstName, lastName, phoneNumber, address fields,
-        // you would map them from the RegistrationRequest DTO here.
-        // user.setFirstName(request.getFirstName());
-        // user.setLastName(request.getLastName());
-        // user.setPhoneNumber(request.getPhoneNumber());
-        // user.setAddress(request.getAddress());
+        user.setPassword(passwordEncoder.encode(request.getPassword())); 
+        user.setRole("USER"); 
 
         return userRepository.save(user);
     }

@@ -85,7 +85,7 @@ public class OrderService {
         if (optionalOrder.isPresent()) { //
             Order order = optionalOrder.get(); //
             if (order.getOrderItems() == null) { //
-                order.setOrderItems(List.of()); // Prevent null in Thymeleaf
+                order.setOrderItems(List.of()); 
             }
             return order; //
         }

@@ -27,12 +27,10 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/", "/home", "/shop", "/about", "/contact", "/search",
                     "/register", "/login", "/subscribe",
-                    "/forgot-password", // <--- ADDED THIS LINE
-                    "/reset-password",  // <--- ADDED THIS LINE
+                    "/forgot-password", 
+                    "/reset-password", 
                     "/css/**", "/js/**", "/images/**"
                 ).permitAll()
-                // Any other request not explicitly permitted above will require authentication.
-                // This includes paths like "/plants/{id}".
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -50,10 +48,10 @@ public class SecurityConfig {
                 .permitAll()
             )
             .rememberMe(remember -> remember
-                .key("uniqueAndSecretKey") // Use a strong, unique key in production!
+                .key("uniqueAndSecretKey") 
                 .userDetailsService(customUserDetailsService)
                 .rememberMeParameter("remember-me")
-                .tokenValiditySeconds(1209600) // 14 days
+                .tokenValiditySeconds(1209600) 
             )
             .sessionManagement(session -> session
                 .maximumSessions(1)

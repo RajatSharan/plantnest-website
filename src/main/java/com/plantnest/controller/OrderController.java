@@ -94,7 +94,7 @@ public String showOrderConfirmation(@AuthenticationPrincipal UserDetails userDet
     } catch (Exception e) {
         e.printStackTrace();
         model.addAttribute("error", e.getMessage());
-        return "error"; // fallback page
+        return "error"; 
     }
 }
 
