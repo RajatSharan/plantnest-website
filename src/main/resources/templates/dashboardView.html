@@ -6,170 +6,259 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+    <style>
+        :root {
+            --primary-green: #28a745;
+            --darker-green: #218838;
+            --light-green-bg: #d1fae5;
+            --text-color: #333;
+            --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Slightly more prominent shadow */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: var(--light-green-bg);
+            border-bottom: 1px solid var(--primary-green);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-green) !important;
+            font-size: 1.8rem; /* Slightly larger brand */
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--primary-green) !important;
+            font-weight: 500;
+        }
+
+        .btn-success {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+            padding: 10px 20px; /* More generous padding */
+            font-size: 1rem;
+            border-radius: 8px; /* Slightly more rounded */
+            transition: all 0.3s ease; /* Smooth transition for hover */
+        }
+
+        .btn-success:hover {
+            background-color: var(--darker-green);
+            border-color: var(--darker-green);
+            transform: translateY(-2px); /* Subtle lift on hover */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hero Section - New Style */
+        .hero-section {
+            background: linear-gradient(rgba(40, 167, 69, 0.7), rgba(40, 167, 69, 0.7)), url('/images/hero-bg.jpg') no-repeat center center;
+            background-size: cover;
+            color: white;
+            padding: 100px 0;
+            margin-bottom: 40px; /* More spacing below hero */
+            text-align: center;
+            border-radius: 15px; /* Rounded corners for hero */
+            box-shadow: var(--card-shadow);
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            margin-bottom: 30px;
+        }
+
+        .search-bar {
+            max-width: 600px; /* Wider search bar */
+            margin: 0 auto;
+        }
+
+        .search-bar .form-control {
+            border-radius: 50px; /* Pill shape for search input */
+            padding: 10px 20px;
+            border: 1px solid var(--primary-green);
+        }
+
+        .search-bar .btn-outline-success {
+            border-radius: 50px; /* Pill shape for search button */
+            margin-left: 10px;
+            padding: 10px 25px;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border-radius: 15px; /* More rounded corners */
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transition for hover */
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden; /* Ensures rounded corners on image */
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px); /* More pronounced lift */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* More intense shadow on hover */
+        }
+
+        .product-card img {
+            border-top-left-radius: 15px; /* Match card border-radius */
+            border-top-right-radius: 15px; /* Match card border-radius */
+            max-height: 220px; /* Slightly taller images */
+            object-fit: cover;
+            width: 100%;
+            transition: transform 0.5s ease; /* Zoom effect on image hover */
+        }
+
+        .product-card:hover img {
+            transform: scale(1.05); /* Subtle zoom on image hover */
+        }
+
+        .product-card .card-body {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 20px; /* Increased padding */
+        }
+
+        .product-card .card-title {
+            font-size: 1.5rem; /* Larger title */
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-green); /* Green title */
+        }
+
+        .product-card .card-text {
+            font-size: 1rem; /* Slightly larger description */
+            color: #555;
+            margin-bottom: 15px;
+            flex-grow: 1;
+            line-height: 1.5;
+        }
+
+        .price-and-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 15px; /* Spacing between description and price/button */
+            border-top: 1px solid #eee; /* Subtle separator */
+        }
+
+        .product-price {
+            font-size: 1.5rem; /* Larger price */
+            font-weight: 700;
+            color: var(--darker-green); /* Darker green for price */
+        }
+
+        .add-to-cart-btn {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 10px 25px; /* More padding for button */
+            border-radius: 50px; /* Pill shape */
+            transition: background-color 0.3s, transform 0.2s;
+            width: auto;
+            white-space: nowrap;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: var(--darker-green);
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background-color: var(--darker-green);
+            color: white;
+            padding: 40px 0; /* More padding for footer */
+            margin-top: 50px; /* More margin from content */
+            text-align: center;
+        }
+
+        .footer p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        .text-decoration-none {
+            text-decoration: none;
+        }
+
+        /* Adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            .hero-section p {
+                font-size: 1rem;
+            }
+            .product-card .card-title {
+                font-size: 1.2rem;
+            }
+            .product-price {
+                font-size: 1.3rem;
+            }
+            .add-to-cart-btn {
+                padding: 8px 18px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<div th:replace="~{fragments/layout :: layout(~{::title}, ~{}, ~{::#content})}">
-    <div id="content">
-        <style>
-            :root {
-                --primary-green: #28a745;
-                --darker-green: #218838;
-                --light-green-bg: #d1fae5;
-                --text-color: #333;
-                --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            }
+<div th:replace="fragments/header :: header(${user}, ${cartCount}, ${query})"></div>
 
-            body {
-                font-family: 'Poppins', sans-serif;
-                color: var(--text-color);
-                background-color: #f8f9fa;
-            }
+<div class="container-fluid">
+    <div class="row">
+        <main class="col-12 px-md-4">
 
-            .navbar {
-                background-color: var(--light-green-bg);
-                border-bottom: 1px solid var(--primary-green);
-            }
+            <section class="hero-section">
+                <div class="container">
+                    <h1>Welcome to PlantNest!</h1>
+                    <p>Discover the perfect green companion for your home or office.</p>
+                    <form class="d-flex search-bar mt-4" th:action="@{/dashboard}" method="get">
+                        <input class="form-control me-2" type="search" placeholder="Search for your favorite plant..." name="query" id="search-input" th:value="${query}">
+                        <button class="btn btn-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </section>
 
-            .navbar-brand {
-                font-weight: 700;
-                color: var(--primary-green) !important;
-            }
-
-            .btn-primary, .btn-success, .badge-success {
-                background-color: var(--primary-green);
-                border-color: var(--primary-green);
-            }
-
-            .btn-primary:hover, .btn-success:hover {
-                background-color: var(--darker-green);
-                border-color: var(--darker-green);
-            }
-
-            .form-control:focus {
-                border-color: var(--primary-green);
-                box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
-            }
-
-            .card {
-                border: none;
-                border-radius: 0.75rem;
-                box-shadow: var(--card-shadow);
-                transition: transform 0.2s ease-in-out;
-            }
-
-            .card:hover {
-                transform: translateY(-5px);
-            }
-
-            .card-img-top {
-                border-top-left-radius: 0.75rem;
-                border-top-right-radius: 0.75rem;
-                height: 180px;
-                object-fit: cover;
-            }
-
-            .add-to-cart-btn {
-                background-color: var(--primary-green);
-                color: white;
-                border: none;
-                padding: 0.5rem 1rem;
-                border-radius: 0.5rem;
-                font-size: 0.9rem;
-                transition: background-color 0.3s ease;
-            }
-
-            .add-to-cart-btn:hover {
-                background-color: var(--darker-green);
-            }
-
-            .search-container {
-                position: relative;
-                width: 100%;
-            }
-
-            .search-input {
-                padding-right: 2.5rem;
-            }
-
-            .search-icon {
-                position: absolute;
-                right: 0.75rem;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #ccc;
-            }
-
-            .cart-icon-badge {
-                position: absolute;
-                top: 5px;
-                right: 5px;
-                padding: 0.2em 0.5em;
-                border-radius: 50%;
-                background-color: red;
-                color: white;
-                font-size: 0.7em;
-            }
-        </style>
-
-        <div class="container-fluid mt-3">
             <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
                 <span th:text="${message}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <span th:text="${error}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
 
-        <div class="container mt-4">
-            <div class="row">
-                <div class="col-md-3">
-                    <h5 class="mb-3">Search Plants</h5>
-                    <form th:action="@{/dashboard}" method="get" class="mb-4">
-                        <div class="input-group search-container">
-                            <input type="text" class="form-control search-input" id="search-input" name="query" th:value="${query}" placeholder="Search by name...">
-                            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        </div>
-                        <button type="submit" class="d-none">Submit</button>
-                    </form>
-
-                    <h5 class="mb-3">Recent Activities</h5>
-                    <ul class="list-group">
-                        <li th:each="activity : ${activities}" class="list-group-item d-flex justify-content-between align-items-center">
-                            <span th:text="${activity.description}"></span>
-                            <small th:text="${#temporals.format(activity.timestamp, 'dd MMM yyyy HH:mm')}"></small>
-                        </li>
-                        <li th:if="${#lists.isEmpty(activities)}" class="list-group-item text-muted">No recent activities.</li>
-                    </ul>
-
-                    <h5 class="mt-4 mb-3">Your Orders</h5>
-                   <ul class="list-group">
-                    <li th:each="order : ${orders}" class="list-group-item">
-            <div>Order ID: <span th:text="${order.id}"></span></div>
-            <div>Date: <span th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy')}"></span></div>
-            <div>Total: $<span th:text="${#numbers.formatDecimal(order.total, 1, 2)}"></span></div>
-            <small class="text-muted" th:text="${order.status}"></small>
-        </li>
-    <li th:if="${#lists.isEmpty(orders)}" class="list-group-item text-muted">No orders placed yet.</li>
-</ul>
-
-                </div>
-
-                <div class="col-md-9">
-                    <h2 class="mb-4">Explore Our Plants</h2>
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                        <div th:each="plant : ${products}" class="col">
-                            <div class="card h-100 d-flex flex-column">
-                                <img th:src="@{${plant.imageUrl}}" class="card-img-top" alt="Plant Image">
-                                <div class="card-body d-flex flex-column">
-                                    <h6 th:text="${plant.name}">Plant Name</h6>
-                                    <div class="mb-3 fw-semibold" th:text="'$' + ${plant.price}">$0.00</div>
+            <div class="container mt-4">
+                <h2 class="text-center mb-4 text-success" style="font-weight: 600;">Our Green Collection</h2>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <div class="col" th:each="plant : ${products}">
+                        <div class="card product-card h-100">
+                            <img th:src="@{${plant.imageUrl}}" class="card-img-top" alt="Plant Image">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${plant.name}">Plant Name</h5>
+                                <p class="card-text" th:text="${plant.description}">Description here</p>
+                                <div class="price-and-button">
+                                    <div class="product-price" th:text="'+ $' + ${plant.price}">$0.00</div>
                                     <button
-                                            class="btn add-to-cart-btn mt-auto"
+                                            class="add-to-cart-btn"
                                             type="button"
                                             th:data-id="${plant.id}">
                                         Buy Now
@@ -177,30 +266,41 @@
                                 </div>
                             </div>
                         </div>
-                        <div th:if="${#lists.isEmpty(products)}" class="col-12">
-                            <div class="alert alert-info text-center">No plants found matching your search.</div>
-                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(products)}" class="col-12">
+                        <div class="alert alert-info text-center">No plants found matching your search.</div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="/js/cart.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const searchInput = document.getElementById('search-input');
-                const searchForm = searchInput && searchInput.form;
-                if (searchInput && searchForm) {
-                    searchInput.addEventListener('input', function () {
-                        if (this.value === '') {
-                            searchForm.submit();
-                        }
-                    });
-                }
-            });
-        </script>
+        </main>
     </div>
 </div>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2025 PlantNest. All rights reserved.</p>
+        <p>
+            <a href="#" class="text-white text-decoration-none mx-2">Privacy Policy</a> |
+            <a href="#" class="text-white text-decoration-none mx-2">Terms of Service</a>
+        </p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/cart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-input');
+        const searchForm = searchInput && searchInput.form;
+        if (searchInput && searchForm) {
+            searchInput.addEventListener('input', function () {
+                // Only submit if the input is cleared, not on every keystroke
+                if (this.value === '') {
+                    searchForm.submit();
+                }
+            });
+        }
+    });
+</script>
 </body>
-</html>
+</html> 

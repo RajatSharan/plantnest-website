@@ -32,7 +32,7 @@ public class CartController {
     @Autowired
     private UserService userService;
 
-    // Helper method to get user by email or username
+    // Helper to get user
     private Optional<User> getUser(UserDetails userDetails) {
         if (userDetails == null) return Optional.empty();
         Optional<User> userOpt = userService.findByEmail(userDetails.getUsername());
@@ -52,7 +52,7 @@ public class CartController {
         return userOpt.map(cartService::countCartItemsByUser).orElse(0);
     }
 
-    // Handles AJAX "Add to Cart"
+    // Add to cart via AJAX
     @PostMapping("/add-to-cart/{plantId}")
     @ResponseBody
     public Map<String, Object> addToCartAjax(@PathVariable Long plantId,
@@ -75,7 +75,7 @@ public class CartController {
         return result;
     }
 
-    // Handles /cart page
+    // View cart
     @GetMapping("/cart")
     public String viewCart(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) return "redirect:/login";
@@ -91,17 +91,69 @@ public class CartController {
                 .map(item -> item.getPlant().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        int cartCount = cartService.countCartItemsByUser(user);
+        BigDecimal taxAmount = totalPrice.multiply(BigDecimal.valueOf(0.05));
+        BigDecimal grandTotal = totalPrice.add(taxAmount);
 
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice", totalPrice);
-        model.addAttribute("cartCount", cartCount);
-        model.addAttribute("user", user);
+        model.addAttribute("taxAmount", taxAmount);
+        model.addAttribute("grandTotal", grandTotal);
+        model.addAttribute("cartCount", cartService.countCartItemsByUser(user));
 
         return "cart";
     }
 
-    // AJAX: Update quantity
+    // Apply coupon
+    @PostMapping("/cart/apply-coupon")
+    public String applyCoupon(@RequestParam("couponCode") String couponCode,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              Model model) {
+        if (userDetails == null) return "redirect:/login";
+
+        Optional<User> optionalUser = getUser(userDetails);
+        if (optionalUser.isEmpty()) return "redirect:/login";
+
+        User user = optionalUser.get();
+        List<CartItem> cartItems = cartService.getCartItemsByUser(user);
+
+        BigDecimal totalPrice = cartItems.stream()
+                .filter(item -> item.getPlant() != null && item.getPlant().getPrice() != null)
+                .map(item -> item.getPlant().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal discountAmount = BigDecimal.ZERO;
+        String couponMessage;
+
+        switch (couponCode.toLowerCase()) {
+            case "save10":
+                discountAmount = totalPrice.multiply(BigDecimal.valueOf(0.10));
+                couponMessage = "Coupon applied: 10% off";
+                break;
+            case "save20":
+                discountAmount = totalPrice.multiply(BigDecimal.valueOf(0.20));
+                couponMessage = "Coupon applied: 20% off";
+                break;
+            default:
+                couponMessage = "Invalid coupon code";
+        }
+
+        BigDecimal discountedPrice = totalPrice.subtract(discountAmount);
+        BigDecimal taxAmount = discountedPrice.multiply(BigDecimal.valueOf(0.05));
+        BigDecimal grandTotal = discountedPrice.add(taxAmount);
+
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("discountAmount", discountAmount);
+        model.addAttribute("taxAmount", taxAmount);
+        model.addAttribute("grandTotal", grandTotal);
+        model.addAttribute("couponMessage", couponMessage);
+        model.addAttribute("couponCode", couponCode);
+        model.addAttribute("cartCount", cartService.countCartItemsByUser(user));
+
+        return "cart";
+    }
+
+    // Update quantity
     @PostMapping("/cart/update-quantity")
     @ResponseBody
     public Map<String, Object> updateQuantity(@RequestParam Long itemId,
@@ -133,7 +185,7 @@ public class CartController {
         return response;
     }
 
-    // AJAX: Remove cart item
+    // Remove item
     @PostMapping("/cart/remove/{id}")
     @ResponseBody
     public Map<String, Object> removeCartItem(@PathVariable Long id,
@@ -154,7 +206,7 @@ public class CartController {
         return result;
     }
 
-    // Optional: Handle GET on /cart/place-order gracefully
+    // Optional: prevent GET on place order route
     @GetMapping("/cart/place-order")
     public String handleGetPlaceOrder() {
         return "redirect:/cart";

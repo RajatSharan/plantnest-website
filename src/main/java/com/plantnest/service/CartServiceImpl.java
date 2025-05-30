@@ -3,7 +3,7 @@ package com.plantnest.service;
 import com.plantnest.model.CartItem;
 import com.plantnest.model.Plant;
 import com.plantnest.model.User;
-import com.plantnest.repository.CartItemRepository;
+import com.plantnest.repository.CartItemRepository; // Assuming this repository exists and works correctly
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,12 +46,11 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItem> getCartItemsByUser(User user) {
-
         if (user != null) {
             System.out.println("DEBUG: getCartItemsByUser - Attempting to retrieve cart for User ID: " + user.getId() + ", Email: " + user.getEmail());
         } else {
             System.out.println("DEBUG: getCartItemsByUser - User is null, cannot retrieve cart!");
-            return List.of(); 
+            return List.of();
         }
         List<CartItem> items = cartRepository.findByUser(user);
         System.out.println("DEBUG: getCartItemsByUser - Found " + items.size() + " items for User ID: " + user.getId());
@@ -68,6 +67,7 @@ public class CartServiceImpl implements CartService {
             return 0; // Return 0 if user is null
         }
         // --- DEBUG LOG END ---
+        // This line is perfectly fine and correctly sums the quantities of all items in the user's cart.
         return cartRepository.findByUser(user).stream()
                 .mapToInt(CartItem::getQuantity)
                 .sum();
@@ -107,6 +107,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItem> getCartItems(User user) {
+        // This method just calls getCartItemsByUser, which is fine.
         return getCartItemsByUser(user);
     }
 

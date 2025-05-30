@@ -38,4 +38,9 @@ public class PlantServiceImpl implements PlantService {
     public void delete(Long id) {
         plantRepository.deleteById(id);
     }
+
+    @Override
+    public List<Plant> searchPlants(String keyword) {
+        return plantRepository.findByNameContainingIgnoreCase(keyword); // Uses method from repository
+    }
 }

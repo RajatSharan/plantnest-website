@@ -1,5 +1,6 @@
 package com.plantnest.config;
 
+import com.plantnest.security.CustomUserDetails;
 import com.plantnest.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,10 +28,11 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/", "/home", "/shop", "/about", "/contact", "/search",
                     "/register", "/login", "/subscribe",
-                    "/forgot-password", 
-                    "/reset-password", 
+                    "/forgot-password", "/reset-password", 
                     "/css/**", "/js/**", "/images/**"
                 ).permitAll()
+                .requestMatchers("/dashboard/**", "/profile", "/profile/update", "/cart/**", "/orders/**")
+                    .hasAnyAuthority("USER", "ROLE_USER") // Allow only authenticated users
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -48,10 +50,10 @@ public class SecurityConfig {
                 .permitAll()
             )
             .rememberMe(remember -> remember
-                .key("uniqueAndSecretKey") 
+                .key("uniqueAndSecretKey")
                 .userDetailsService(customUserDetailsService)
                 .rememberMeParameter("remember-me")
-                .tokenValiditySeconds(1209600) 
+                .tokenValiditySeconds(1209600)
             )
             .sessionManagement(session -> session
                 .maximumSessions(1)
@@ -77,8 +79,9 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            var userDetails = authentication.getPrincipal();
-            request.getSession().setAttribute("loggedInUser", userDetails);
+            // Fix: store the actual User object in session under key "user"
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            request.getSession().setAttribute("user", userDetails.getUser());
             response.sendRedirect("/dashboard?loginSuccess=true");
         };
     }

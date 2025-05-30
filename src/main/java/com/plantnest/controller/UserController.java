@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @Controller
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    // Show profile page
     @GetMapping("/profile")
     public String showProfileForm(Model model, HttpSession session,
                                   @RequestParam(name = "updateSuccess", required = false) String updateSuccess) {
@@ -38,22 +38,22 @@ public class UserController {
         }
 
         model.addAttribute("user", freshUser);
-        model.addAttribute("cartCount", 0);
+        model.addAttribute("cartCount", 0); // Update this if cart data is needed
         model.addAttribute("query", "");
 
         if ("true".equals(updateSuccess)) {
-            model.addAttribute("message", "Profile updated successfully!");
+            model.addAttribute("success", "Profile updated successfully!");
         }
 
         return "profile";
     }
 
+    // Handle profile update
     @PostMapping("/profile/update")
-    public String updateProfile(
-            @Valid @ModelAttribute("user") User updatedUser,
-            BindingResult result,
-            HttpSession session,
-            Model model) {
+    public String updateProfile(@Valid @ModelAttribute("user") User updatedUser,
+                                BindingResult result,
+                                HttpSession session,
+                                Model model) {
 
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
@@ -69,13 +69,17 @@ public class UserController {
 
         try {
             User currentDbUser = userService.findById(sessionUser.getId());
+
             if (currentDbUser != null) {
-                if (!currentDbUser.getEmail().equalsIgnoreCase(updatedUser.getEmail()) && userService.existsByEmail(updatedUser.getEmail())) {
+                if (!currentDbUser.getEmail().equalsIgnoreCase(updatedUser.getEmail()) &&
+                        userService.existsByEmail(updatedUser.getEmail())) {
                     model.addAttribute("emailError", "Email already registered by another user.");
                     model.addAttribute("user", currentDbUser);
                     return "profile";
                 }
-                if (!currentDbUser.getUsername().equalsIgnoreCase(updatedUser.getUsername()) && userService.existsByUsername(updatedUser.getUsername())) {
+
+                if (!currentDbUser.getUsername().equalsIgnoreCase(updatedUser.getUsername()) &&
+                        userService.existsByUsername(updatedUser.getUsername())) {
                     model.addAttribute("usernameError", "Username already taken by another user.");
                     model.addAttribute("user", currentDbUser);
                     return "profile";
@@ -86,6 +90,7 @@ public class UserController {
             session.setAttribute("user", savedUser);
 
             return "redirect:/profile?updateSuccess=true";
+
         } catch (RuntimeException e) {
             System.err.println("Profile update failed: " + e.getMessage());
             model.addAttribute("error", "Failed to update profile. " + e.getMessage());
