@@ -91,7 +91,6 @@ Imagine seeing:
 - 🛍️ **Checkout flow** with serene, user-friendly navigation  
 - 📝 **Secure registration** inviting users to begin their journey  
 
-*(Add screenshots or GIFs here if available!)*
 
 ---
 
