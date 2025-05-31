@@ -1,6 +1,6 @@
 package com.plantnest.controller;
 
-import com.plantnest.dto.RegistrationRequest; // Import the RegistrationRequest DTO
+import com.plantnest.dto.RegistrationRequest; 
 import com.plantnest.model.User;
 import com.plantnest.repository.UserRepository;
 import com.plantnest.service.UserService;
@@ -50,7 +50,7 @@ public class AuthController {
             return "register";
         }
 
-        // Check if passwords match (validation logic for DTO)
+        
         if (!registrationRequest.getPassword().equals(registrationRequest.getConfirmPassword())) {
             bindingResult.rejectValue("confirmPassword", "error.registrationRequest", "Passwords do not match");
             return "register";
@@ -66,7 +66,7 @@ public class AuthController {
         }
 
         try {
-            // Map the RegistrationRequest DTO to a User entity
+            
             User user = new User();
             user.setFirstName(registrationRequest.getFirstName());
             user.setLastName(registrationRequest.getLastName());
@@ -74,12 +74,12 @@ public class AuthController {
             user.setEmail(registrationRequest.getEmail());
             user.setPhoneNumber(registrationRequest.getPhoneNumber());
             user.setAddress(registrationRequest.getAddress());
-            user.setPassword(registrationRequest.getPassword()); // Password will be encoded by UserService.save()
+            user.setPassword(registrationRequest.getPassword()); 
 
-            // IMPORTANT: Set the default role here
-            user.setRole("USER"); // Or "ROLE_USER" depending on your application's role naming convention
+            
+            user.setRole("USER"); 
 
-            userService.save(user); // Save the User object
+            userService.save(user); 
             redirectAttributes.addAttribute("registered", "true");
             return "redirect:/login";
         } catch (Exception e) {
