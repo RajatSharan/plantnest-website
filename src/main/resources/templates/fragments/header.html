@@ -15,7 +15,9 @@
 
         <div class="d-flex gap-4 align-items-center">
 
+            <!-- Authenticated User Links -->
             <div sec:authorize="isAuthenticated()" class="d-flex gap-4 align-items-center">
+
                 <a th:href="@{/dashboard}" class="text-dark text-decoration-none" title="Dashboard">
                     <i class="fas fa-home fa-lg"></i>
                 </a>
@@ -33,12 +35,11 @@
                     <span id="cart-count"
                           class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                           th:if="${cartCount > 0}"
-                          th:text="${cartCount}">
-                        0
-                    </span>
+                          th:text="${cartCount}">0</span>
                 </a>
 
-                <form th:action="@{/logout}" method="post" class="d-inline-block">
+                <!-- Logout Form -->
+                <form th:action="@{/logout}" method="post" class="d-inline-block mb-0">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3" title="Logout">
                         <i class="fas fa-sign-out-alt me-1"></i> Logout
@@ -46,6 +47,7 @@
                 </form>
             </div>
 
+            <!-- Unauthenticated User Links -->
             <div sec:authorize="!isAuthenticated()" class="d-flex gap-3 align-items-center">
                 <a th:href="@{/login}" class="btn btn-outline-primary btn-sm rounded-pill px-3">Login</a>
                 <a th:href="@{/register}" class="btn btn-success btn-sm rounded-pill px-3">Register</a>

@@ -82,7 +82,7 @@
                             <tr th:each="item : ${cartItems}">
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <img th:src="@{'/images/' + ${item.plant.image}}" class="img-thumbnail me-3" alt="Plant Image">
+                                        <img th:src="@{${item.plant.imageUrl}}" class="img-thumbnail me-3" alt="Plant Image">
                                         <div>
                                             <strong th:text="${item.plant.name}">Plant Name</strong>
                                             <div class="text-muted small">Est. delivery: 3–5 days</div>
