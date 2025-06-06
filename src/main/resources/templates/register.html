@@ -1,115 +1,285 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Register</title>
+    <title>PlantNest | Register</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', sans-serif;
+        :root {
+            --primary-green: #28a745; /* A fresh green for accents */
+            --darker-green: #218838; /* For hover states */
+            --gradient-start: #14532d; /* Darker green for gradient */
+            --gradient-end: #84cc16;   /* Lighter green for gradient */
+            --text-color: #333;
+            --container-bg: rgba(255, 255, 255, 0.98); /* Slightly transparent white */
+            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Soft shadow */
+            --border-radius-lg: 15px;
+            --input-border-color: #ced4da;
+            --input-focus-border: #80bdff; /* Bootstrap's focus color */
+            --input-focus-shadow: rgba(0, 123, 255, 0.25);
+            --social-btn-bg: #f0f0f0;
+            --social-btn-hover-bg: #e0e0e0;
         }
 
         body, html {
             height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif; /* Applied Poppins */
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
 
         .register-container {
             display: flex;
-            height: 100vh;
+            min-height: 100vh; /* Use min-height to allow content to push height */
+            /* Animation for the whole container */
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .register-image {
             flex: 1;
             background: url('/images/register-bg.jpg') no-repeat center center;
             background-size: cover;
+            position: relative;
+            min-height: 100%; /* Ensure it takes full height when side-by-side */
+        }
+
+        .register-image::before { /* Overlay for the image */
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2); /* Subtle dark overlay */
+            z-index: 1;
         }
 
         .register-form-container {
             flex: 1;
             display: flex;
+            flex-direction: column; /* Allows content to stack and scroll if needed */
             align-items: center;
-            justify-content: center;
-            background-color: #fff;
-            padding: 40px;
+            justify-content: center; /* Center form vertically within its container */
+            background-color: var(--container-bg);
+            padding: 40px 20px; /* Adjusted padding for horizontal breathing room */
+            overflow-y: auto; /* Allow scrolling for small screens */
+            min-width: 320px; /* Prevent form container from becoming too narrow */
         }
 
         .form-box {
-            width: 100%;
-            max-width: 400px;
+            width: 100%; /* Take full width of its parent (register-form-container) */
+            max-width: 450px; /* Maximum width for the form itself */
+            padding: 30px; /* Padding inside the box */
+            box-shadow: var(--box-shadow); /* Applied shadow */
+            border-radius: var(--border-radius-lg); /* Rounded corners */
+            background-color: white; /* Explicitly white background */
+            /* Animation for the form box */
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInSlideUp 0.8s ease-out 0.3s forwards; /* Delayed animation */
+        }
+
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
             text-align: center;
             margin-bottom: 30px;
-            font-size: 32px;
+            font-size: 2.2rem; /* Larger font size */
+            color: var(--primary-green);
+            font-weight: 700; /* Bolder */
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
+        .form-group label { /* Added label styling for clarity */
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
         .form-group input[type="text"],
+        .form-group input[type="email"], /* Added email type */
+        .form-group input[type="tel"], /* Added tel type */
         .form-group input[type="password"] {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 12px 15px;
+            border: 1px solid var(--input-border-color);
+            border-radius: 8px; /* Slightly more rounded */
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group input[type="tel"]:focus,
+        .form-group input[type="password"]:focus {
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 0 0.25rem var(--input-focus-shadow);
+            outline: none;
+        }
+
+        /* Error message styling for Thymeleaf validation errors */
+        .text-danger { /* Renamed from span[th:errors] for more general use with div/p */
+            color: #dc3545; /* Bootstrap danger red */
+            font-size: 0.875em;
+            margin-top: 5px;
+            display: block;
         }
 
         .form-group.checkbox {
             display: flex;
             align-items: center;
+            margin-top: 15px; /* Spacing */
+            margin-bottom: 25px;
         }
 
         .form-group.checkbox input[type="checkbox"] {
             margin-right: 10px;
+            width: 18px; /* Size checkbox */
+            height: 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            flex-shrink: 0; /* Prevent shrinking */
         }
+
+        .form-group.checkbox label {
+            margin-bottom: 0; /* Remove default label margin */
+            font-size: 0.95rem;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
 
         .register-button {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(to right, #14532d, #84cc16);
+            padding: 14px; /* More padding */
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
             border: none;
             color: white;
-            font-size: 16px;
-            border-radius: 25px;
+            font-size: 1.15rem; /* Larger font */
+            font-weight: 600;
+            border-radius: 10px; /* Slightly less rounded than 25px */
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 20px; /* More margin top */
+            transition: opacity 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Added opacity */
+        }
+
+        .register-button:hover:not(:disabled) { /* Apply hover only when not disabled */
+            transform: translateY(-2px) scale(1.005); /* Subtle lift and slight grow */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+            background: linear-gradient(to right, #1a603c, #90e022); /* Slightly brighter gradient on hover */
         }
 
         .register-button:disabled {
-            opacity: 0.5;
+            background: linear-gradient(to right, #a0a0a0, #c0c0c0); /* Greyed out gradient */
             cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+            box-shadow: none;
         }
 
         .social-login {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px; /* More space */
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .social-login p {
+            margin-bottom: 15px;
         }
 
         .social-login button {
-            margin: 0 10px;
-            padding: 10px 20px;
-            border: none;
-            background: #f0f0f0;
-            border-radius: 10px;
+            margin: 0 8px; /* Closer buttons */
+            padding: 10px 15px; /* Smaller padding */
+            border: 1px solid #ddd; /* Subtle border */
+            background: var(--social-btn-bg);
+            border-radius: 8px; /* Rounded corners */
             cursor: pointer;
-            font-size: 18px;
+            font-size: 1.1rem; /* Slightly smaller icon font */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+        }
+
+        .social-login button:hover {
+            background: var(--social-btn-hover-bg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
         }
 
         .login-link {
             text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
+            margin-top: 30px; /* More space */
+            font-size: 1rem; /* Slightly larger text */
+            color: var(--text-color);
         }
 
         .login-link a {
             text-decoration: none;
-            color: #1d4ed8;
-            font-weight: bold;
+            color: var(--primary-green); /* Match main color */
+            font-weight: 600; /* Bolder */
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+            color: var(--darker-green);
+        }
+
+        /* Responsive adjustments */
+        /* Change breakpoint for stacking from 768px to 992px to allow more horizontal space */
+        @media (max-width: 992px) {
+            .register-container {
+                flex-direction: column; /* Stack image and form vertically */
+                min-height: auto; /* Allow content to dictate height */
+            }
+            .register-image {
+                height: 250px; /* Give image a fixed height on smaller screens */
+                flex: none; /* Remove flex sizing */
+                width: 100%; /* Take full width */
+                min-height: auto;
+            }
+            .register-form-container {
+                padding: 30px 20px; /* Adjusted padding for smaller screens */
+                width: 100%; /* Take full width */
+                min-width: auto; /* Allow it to shrink if needed */
+            }
+            .form-box {
+                margin: 0 auto; /* Center form box without vertical margin pushing it out */
+                max-width: 450px; /* Maintain max-width */
+            }
+        }
+
+        /* Adjustments for very small screens (e.g., mobile phones) */
+        @media (max-width: 576px) {
+            .register-form-container {
+                padding: 20px 15px; /* Reduce padding further */
+            }
+            .form-box {
+                padding: 20px;
+                box-shadow: none; /* Remove shadow on very small screens for cleaner look */
+                border-radius: 0; /* Make it full width without radius on very small screens */
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+            .register-button {
+                padding: 12px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -119,33 +289,63 @@
     <div class="register-image"></div>
     <div class="register-form-container">
         <div class="form-box">
-            <h2>Register</h2>
-            <form th:action="@{/register}" th:object="${user}" method="post">
+            <h2>Create Account</h2>
+            <form th:action="@{/register}" th:object="${registrationRequest}" method="post">
+                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
+                    <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+                </div>
+
                 <div class="form-group">
-                    <input type="text" id="username" placeholder="Full Name" th:field="*{username}" required />
-                    <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" placeholder="Enter your first name" th:field="*{firstName}" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
                 </div>
                 <div class="form-group">
-                    <input type="text" id="email" placeholder="Email or Phone Number" th:field="*{email}" required />
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" placeholder="Enter your last name" th:field="*{lastName}" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="password" placeholder="Password" th:field="*{password}" required />
-                    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Choose a username" th:field="*{username}" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="confirmPassword" placeholder="Confirm Password" th:field="*{confirmPassword}" required />
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email address" th:field="*{email}" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" id="phoneNumber" placeholder="Enter your phone number" th:field="*{phoneNumber}" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" placeholder="Enter your address" th:field="*{address}" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Create a password" th:field="*{password}" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" th:field="*{confirmPassword}" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
                 </div>
                 <div class="form-group checkbox">
-                    <input type="checkbox" id="terms" />
-                    <label for="terms">I agree to the terms and conditions</label>
+                    <input type="checkbox" id="terms" required />
+                    <label for="terms">I agree to the <a href="#" style="color:var(--primary-green); text-decoration: underline;">terms and conditions</a></label>
                 </div>
                 <button type="submit" class="register-button" id="registerBtn" disabled>Register</button>
             </form>
 
             <div class="social-login">
-                <p>Register in with</p>
-                <button>G</button>
-                <button>f</button>
+                <p>Or register with</p>
+                <button title="Register with Google">G</button>
+                <button title="Register with Facebook">f</button>
             </div>
 
             <div class="login-link">
@@ -155,30 +355,54 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const username = document.getElementById("username");
-        const email = document.getElementById("email");
-        const password = document.getElementById("password");
-        const confirmPassword = document.getElementById("confirmPassword");
-        const terms = document.getElementById("terms");
-        const registerBtn = document.getElementById("registerBtn");
+        const firstNameInput = document.getElementById("firstName");
+        const lastNameInput = document.getElementById("lastName");
+        const usernameInput = document.getElementById("username");
+        const emailInput = document.getElementById("email");
+        const phoneNumberInput = document.getElementById("phoneNumber");
+        const addressInput = document.getElementById("address");
+        const passwordInput = document.getElementById("password");
+        const confirmPasswordInput = document.getElementById("confirmPassword");
+        const termsCheckbox = document.getElementById("terms");
+        const registerButton = document.getElementById("registerBtn");
 
         function validateForm() {
-            const isValid = username.value.trim() &&
-                email.value.trim() &&
-                password.value.trim() &&
-                confirmPassword.value.trim() &&
-                terms.checked;
+            const firstNameValue = firstNameInput.value.trim();
+            const lastNameValue = lastNameInput.value.trim();
+            const usernameValue = usernameInput.value.trim();
+            const emailValue = emailInput.value.trim();
+            const phoneNumberValue = phoneNumberInput.value.trim();
+            const addressValue = addressInput.value.trim();
+            const passwordValue = passwordInput.value.trim();
+            const confirmPasswordValue = confirmPasswordInput.value.trim();
+            const termsChecked = termsCheckbox.checked;
 
-            registerBtn.disabled = !isValid;
+            const passwordsMatch = passwordValue === confirmPasswordValue;
+
+            const isValid = firstNameValue !== '' &&
+                            lastNameValue !== '' &&
+                            usernameValue !== '' &&
+                            emailValue !== '' &&
+                            phoneNumberValue !== '' &&
+                            addressValue !== '' &&
+                            passwordValue !== '' &&
+                            confirmPasswordValue !== '' &&
+                            termsChecked &&
+                            passwordsMatch;
+
+            registerButton.disabled = !isValid;
         }
 
-        [username, email, password, confirmPassword].forEach(input => {
+        // Add event listeners for all relevant input fields
+        [firstNameInput, lastNameInput, usernameInput, emailInput, phoneNumberInput, addressInput, passwordInput, confirmPasswordInput].forEach(input => {
             input.addEventListener("input", validateForm);
         });
+        termsCheckbox.addEventListener("change", validateForm);
 
-        terms.addEventListener("change", validateForm);
+        validateForm(); // Initial validation on page load
     });
 </script>
 

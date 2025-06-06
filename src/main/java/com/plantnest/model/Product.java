@@ -2,11 +2,8 @@ package com.plantnest.model;
 
 import jakarta.persistence.*;
 
-/**
- * Entity representing a product/plant listed in the store.
- */
 @Entity
-@Table(name = "plant") // Maps to your existing database table
+@Table(name = "plant") 
 public class Product {
 
     @Id
@@ -18,10 +15,8 @@ public class Product {
 
     private double price;
 
-    // This is the local image file name (e.g., fern.jpg)
     private String image;
 
-    // Optional external or CDN image link
     @Column(name = "image_url")
     private String imageUrl;
 

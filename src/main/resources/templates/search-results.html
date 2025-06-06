@@ -1,30 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"> <head>
     <title>Search Results</title>
 </head>
 <body>
-<div th:replace="layout :: content">
-    <!-- Search Title -->
-    <h2 class="text-center mt-4 text-white" th:text="'Search results for: ' + ${query}"></h2>
+    <div layout:decorate="~{layout}"> 
+        <div layout:fragment="content">
+            <h2 class="text-center mt-4 text-white" th:text="'Search results for: ' + ${query}"></h2>
 
-    <!-- Product Results -->
-    <div class="product-grid"
-         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 30px; padding: 20px;">
-        <div th:each="plant : ${products}" class="card"
-             style="background-color: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 10px; text-align: center; backdrop-filter: blur(6px);">
-            <img th:src="@{'/images/' + ${plant.image}}" th:alt="${plant.name}"
-                 style="width: 100px; height: auto; margin-bottom: 10px;">
-            <div class="name" th:text="${plant.name}" style="font-size: 1.2rem; margin-bottom: 5px;"></div>
-            <div class="price" th:text="'Rs. ' + ${plant.price} + '/-'" style="color: #5be17a; font-weight: bold;"></div>
+            <div class="product-grid"
+                 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 30px; padding: 20px;">
+                <div th:each="plant : ${products}" class="card"
+                     style="background-color: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 10px; text-align: center; backdrop-filter: blur(6px);">
+                    <img th:src="@{'/images/' + ${plant.image}}" th:alt="${plant.name}"
+                         style="width: 100px; height: auto; margin-bottom: 10px;">
+                    <div class="name" th:text="${plant.name}" style="font-size: 1.2rem; margin-bottom: 5px;"></div>
+                    <div class="price" th:text="'Rs. ' + ${plant.price} + '/-'" style="color: #5be17a; font-weight: bold;"></div>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(products)}" class="text-center text-white mt-4">
+                <p>No products found matching your search.</p>
+            </div>
         </div>
     </div>
-
-    <!-- No Results Message -->
-    <div th:if="${#lists.isEmpty(products)}" class="text-center text-white mt-4">
-        <p>No products found matching your search.</p>
-    </div>
-</div>
 </body>
 </html>

@@ -16,14 +16,12 @@ public class PlantController {
     @Autowired
     private PlantService plantService;
 
-    // Show all plants - Shop page
     @GetMapping("/shop")
     public String viewShopPage(Model model) {
         model.addAttribute("plants", plantService.getAllPlants());
         return "shop";
     }
 
-    // View plant details by ID
     @GetMapping("/view/{id}")
     public String viewPlantDetails(@PathVariable Long id, Model model) {
         Optional<Plant> plant = plantService.getPlantById(id);
@@ -35,14 +33,12 @@ public class PlantController {
         }
     }
 
-    // Show Add Plant Form
     @GetMapping("/add")
     public String showAddPlantForm(Model model) {
         model.addAttribute("plant", new Plant());
         return "add-plant";
     }
 
-    // Submit Add Plant Form
     @PostMapping("/add")
     public String addPlant(@ModelAttribute("plant") Plant plant) {
         plantService.save(plant);

@@ -6,4 +6,7 @@ public interface PlantNestUserService {
     User findById(Long id);
     User saveOrUpdateUser(User user);
     User findByEmail(String email);
+    boolean existsByEmail(String email);
+    void registerUser(User user);
+
 }

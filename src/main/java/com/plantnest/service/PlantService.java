@@ -16,4 +16,6 @@ public interface PlantService {
     Optional<Plant> getPlantById(Long id);
 
     void delete(Long id);
+
+     List<Plant> searchPlants(String keyword);
 }

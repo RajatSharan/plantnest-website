@@ -1,5 +1,6 @@
 package com.plantnest.config;
 
+import com.plantnest.security.CustomUserDetails;
 import com.plantnest.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,35 +24,41 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/", "/home", "/shop", "/about", "/contact", "/search",
-                                "/register", "/login", "/subscribe",
-                                "/css/**", "/js/**", "/images/**"
-                        ).permitAll()
-                        .requestMatchers(
-                                "/dashboard", "/cart", "/profile", "/place-order"
-                        ).authenticated()
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/do-login")
-                        .successHandler(customAuthenticationSuccessHandler())
-                        .failureUrl("/login?error=true")
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                )
-                .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(false)
-                );
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/", "/home", "/shop", "/about", "/contact", "/search",
+                    "/register", "/login", "/subscribe",
+                    "/forgot-password", "/reset-password", 
+                    "/css/**", "/js/**", "/images/**"
+                ).permitAll()
+                .requestMatchers("/dashboard/**", "/profile", "/profile/update", "/cart/**", "/orders/**")
+                    .hasAnyAuthority("USER", "ROLE_USER") // Allow only authenticated users
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/do-login")
+                .successHandler(customAuthenticationSuccessHandler())
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            )
+            .rememberMe(remember -> remember
+                .key("uniqueAndSecretKey")
+                .userDetailsService(customUserDetailsService)
+                .rememberMeParameter("remember-me")
+                .tokenValiditySeconds(1209600)
+            )
+            .sessionManagement(session -> session
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
+            );
 
         return http.build();
     }
@@ -72,8 +79,9 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            var userDetails = authentication.getPrincipal();
-            request.getSession().setAttribute("loggedInUser", userDetails);
+            // Fix: store the actual User object in session under key "user"
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            request.getSession().setAttribute("user", userDetails.getUser());
             response.sendRedirect("/dashboard?loginSuccess=true");
         };
     }

@@ -16,7 +16,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    // 🔍 Search products by name
     @GetMapping("/search")
     public String searchProducts(@RequestParam("query") String query, Model model) {
         List<Product> results = productService.searchByName(query);
@@ -25,11 +24,10 @@ public class ProductController {
         return "search-results";
     }
 
-    // 📦 Optional: Show all products (useful for admin or shop page)
     @GetMapping("/products")
     public String viewAllProducts(Model model) {
         List<Product> allProducts = productService.getAllProducts();
         model.addAttribute("products", allProducts);
-        return "products"; // You'll need to create products.html if needed
+        return "products";
     }
 }

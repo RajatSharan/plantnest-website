@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Checkout - PlantNest</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #28a745; /* Main brand green */
+            --darker-green: #218838; /* Darker green for hover */
+            --light-green-bg: #e6f7e9; /* Light green background */
+            --text-color: #333;
+            --secondary-text: #6c757d; /* Muted text */
+            --card-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08); /* Soft card shadow */
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-green-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .checkout-container {
+            max-width: 960px;
+            width: 100%;
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin: auto; /* Ensures it's centered */
+        }
+
+        h2 {
+            color: var(--primary-green);
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        h2::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-green);
+            border-radius: 2px;
+        }
+
+        h3 {
+            color: var(--darker-green);
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        label {
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            color: var(--secondary-text);
+        }
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .order-summary-table img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+        .order-summary-table th, .order-summary-table td {
+            vertical-align: middle;
+            padding: 12px;
+        }
+        .order-summary-table thead th {
+            background-color: var(--primary-green);
+            color: white;
+            border-color: var(--darker-green);
+            font-weight: 600;
+        }
+        .order-summary-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .order-summary-table .plant-info {
+            display: flex;
+            align-items: center;
+        }
+        .order-summary-table .plant-name {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        .order-summary-table .text-muted {
+            font-size: 0.9em;
+            color: var(--secondary-text) !important;
+        }
+
+        .total-section {
+            background-color: var(--light-green-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--darker-green);
+            border: 1px dashed var(--primary-green);
+        }
+        .total-section .total-label {
+            color: var(--primary-green);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .btn-place-order {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 30px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .btn-place-order:hover {
+            background-color: var(--darker-green);
+            transform: translateY(-2px);
+        }
+
+        .card-fields {
+            display: none; /* Controlled by JS */
+        }
+        .alert-custom {
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        .alert-info-green {
+            background-color: #d4edda; /* Lighter green */
+            border-color: #c3e6cb;
+            color: #155724; /* Darker green text */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 767.98px) {
+            .checkout-container {
+                padding: 20px;
+            }
+            .total-section {
+                flex-direction: column;
+                align-items: flex-end;
+                font-size: 1.1rem;
+            }
+            .total-section .total-label {
+                align-self: flex-start;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const paymentMethodSelect = document.getElementById('paymentMethod');
+            const cardFieldsDiv = document.getElementById('card-fields');
+            const cardNumberInput = document.getElementById('cardNumber');
+            const expiryInput = document.getElementById('expiry');
+            const cvvInput = document.getElementById('cvv');
+
+            function toggleCardFields() {
+                if (paymentMethodSelect.value === 'Card') {
+                    cardFieldsDiv.style.display = 'block';
+                    cardNumberInput.setAttribute('required', 'true');
+                    expiryInput.setAttribute('required', 'true');
+                    cvvInput.setAttribute('required', 'true');
+                } else {
+                    cardFieldsDiv.style.display = 'none';
+                    cardNumberInput.removeAttribute('required');
+                    expiryInput.removeAttribute('required');
+                    cvvInput.removeAttribute('required');
+                }
+            }
+
+            // Set initial state
+            toggleCardFields();
+
+            // Add event listener for changes
+            paymentMethodSelect.addEventListener('change', toggleCardFields);
+
+            // Input formatting for Expiry Date (MM/YY)
+            expiryInput.addEventListener('input', function (e) {
+                let value = e.target.value;
+                value = value.replace(/\D/g, ''); // Remove non-digits
+                if (value.length > 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                e.target.value = value;
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="checkout-container">
+    <h2>Complete Your Order</h2>
+
+    <div th:if="${success != null and !#strings.isEmpty(success)}" class="alert alert-success alert-dismissible fade show alert-custom" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error != null and !#strings.isEmpty(error)}" class="alert alert-danger alert-dismissible fade show alert-custom" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${(success == null || #strings.isEmpty(success)) and (error == null || #strings.isEmpty(error))}" class="alert alert-info alert-custom alert-info-green" role="alert">
+        <i class="fas fa-info-circle me-2"></i>
+        Review your order details and complete the purchase.
+    </div>
+
+    <form th:action="@{/checkout/place-order}" method="post" class="needs-validation" novalidate>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Shipping Information</h3>
+                <div class="mb-3">
+                    <label for="shippingAddress" class="form-label">Shipping Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                        <input type="text" class="form-control" id="shippingAddress" name="shippingAddress" th:value="${user != null ? user.address : ''}" placeholder="Enter full shipping address" required />
+                        <div class="invalid-feedback">Please provide a valid shipping address.</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="deliveryOption" class="form-label">Delivery Option</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-truck"></i></span>
+                        <select class="form-select" id="deliveryOption" name="deliveryOption" required>
+                            <option value="Standard">Standard Delivery (3-5 Business Days)</option>
+                            <option value="Express">Express Delivery (1-2 Business Days) - Extra charges may apply</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a delivery option.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h3>Payment Details</h3>
+                <div class="mb-3">
+                    <label for="paymentMethod" class="form-label">Payment Method</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-wallet"></i></span>
+                        <select class="form-select" id="paymentMethod" name="paymentMethod" required>
+                            <option value="COD">Cash on Delivery (COD)</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Card">Credit/Debit Card</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a payment method.</div>
+                    </div>
+                </div>
+
+                <div id="card-fields" class="card-fields">
+                    <div class="mb-3">
+                        <label for="cardNumber" class="form-label">Card Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="far fa-credit-card"></i></span>
+                            <input type="text" class="form-control" id="cardNumber" name="cardNumber" maxlength="19" pattern="\d{16,19}" placeholder="XXXX XXXX XXXX XXXX" />
+                            <div class="invalid-feedback">Please enter a valid card number (16-19 digits).</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="expiry" class="form-label">Expiry Date</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                <input type="text" class="form-control" id="expiry" name="expiry" maxlength="5" pattern="(0[1-9]|1[0-2])\/\d{2}" placeholder="MM/YY" />
+                                <div class="invalid-feedback">Please enter a valid expiry date (MM/YY).</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cvv" class="form-label">CVV</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="cvv" name="cvv" maxlength="4" pattern="\d{3,4}" placeholder="CVV" />
+                                <div class="invalid-feedback">Please enter a valid CVV (3-4 digits).</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="mt-4">Order Summary</h3>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover order-summary-table">
+                <thead>
+                    <tr>
+                        <th>Plant</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${cartItems}">
+                        <td>
+                            <div class="plant-info">
+                                <img th:src="@{${item.plant.imageUrl}}" alt="Plant Image" class="img-fluid">
+                                <span class="plant-name" th:text="${item.plant.name}">Plant Name</span>
+                            </div>
+                        </td>
+                        <td th:text="${item.quantity}">1</td>
+                        <td>₹<span th:text="${#numbers.formatDecimal(item.plant.price * item.quantity, 0, 'COMMA', 2, 'POINT')}">0.00</span></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(cartItems)}">
+                        <td colspan="3" class="text-center text-muted py-4">Your cart is empty. Please add items to checkout.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="total-section">
+            <span class="total-label">Order Total:</span>
+            <span>₹<span th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')}">0.00</span></span>
+        </div>
+
+        <button type="submit" class="btn btn-place-order">Place Order</button>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+</body>
+</html>
