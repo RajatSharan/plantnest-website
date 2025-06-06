@@ -3,6 +3,18 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:fragment="layout (pageTitle, headContent, content)">
 <head>
+<<<<<<< HEAD
+    <meta charset="UTF-8">
+    <title>PlantNest</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<div th:fragment="layout(content, searchBar)">
+    <div th:replace="fragments/header :: header(${searchBar})"></div>
+=======
     <title th:replace="${pageTitle}">Default Title</title>
 
     <!-- Optional additional <head> content -->
@@ -39,6 +51,7 @@
                 <img src="/images/logo.png" alt="Logo" onerror="this.style.display='none'" />
                 <i class="fas fa-seedling me-2"></i>PlantNest
             </a>
+>>>>>>> ffe4041c14104a697a157903de2bb3d87418fd5a
 
             <!-- Toggler -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
