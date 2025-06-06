@@ -1,24 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout(~{::content})}">
-<div th:fragment="content">
+      th:replace="~{fragments/layout :: layout(~{::content}, true)}"> <div th:fragment="content">
     <div class="container-fluid px-4 py-4">
-        <div>
-            <h1>Welcome to the Dashboard!</h1>
-            <p>This is the user content.</p>
-        </div>
-
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h4 class="fw-bold">Welcome Back!</h4>
                 <p>Hello <span th:text="${user.firstName}">User</span>, shop some of our newest plants</p>
             </div>
-            <form th:action="@{/dashboard}" method="get" class="d-flex align-items-center">
-                <input type="text" name="query" class="form-control rounded-pill" placeholder="Search..." th:value="${query}" />
-                <button class="btn btn-outline-success ms-2 rounded-circle" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
         </div>
 
         <div class="mb-4">
@@ -59,6 +47,21 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="mt-5 mb-3">
+            <h5 class="fw-bold">Recent Activity</h5>
+        </div>
+        <div class="card p-3 shadow-sm">
+            <ul class="list-unstyled mb-0">
+                <li class="d-flex justify-content-between align-items-center py-2">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-arrow-right text-success me-2"></i>
+                        <span>Snake plant added to cart</span>
+                    </div>
+                    <strong>$18.00</strong>
+                </li>
+            </ul>
         </div>
     </div>
 </div>

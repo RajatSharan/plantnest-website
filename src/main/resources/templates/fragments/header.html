@@ -1,8 +1,7 @@
-<!-- templates/fragments/header.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="header">
+<div th:fragment="header(searchBar)">
     <nav class="navbar navbar-expand-lg navbar-light shadow-sm" style="background-color: #e7f7ed;">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold text-success" th:href="@{/dashboard}">
@@ -17,7 +16,15 @@
                     <li class="nav-item"><a class="nav-link" th:href="@{/orders}">My Orders</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/shop}">Shop</a></li>
                 </ul>
-                <a th:href="@{/logout}" class="btn btn-outline-success btn-sm">Logout</a>
+                <div th:if="${searchBar}" class="d-flex ms-auto">
+                    <form th:action="@{/dashboard}" method="get" class="d-flex align-items-center">
+                        <input type="text" name="query" class="form-control rounded-pill" placeholder="Search..." th:value="${query}" />
+                        <button class="btn btn-outline-success ms-2 rounded-circle" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+                <a th:href="@{/logout}" class="btn btn-outline-success btn-sm ms-3">Logout</a>
             </div>
         </div>
     </nav>
