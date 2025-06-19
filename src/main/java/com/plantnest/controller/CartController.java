@@ -1,3 +1,4 @@
+// CartController.java
 package com.plantnest.controller;
 
 import com.plantnest.model.Plant;
@@ -42,8 +43,9 @@ public class CartController {
         return userOpt;
     }
 
-    @ModelAttribute("cartItemCount")
-    public int addCartItemCount(Authentication authentication) {
+    // Set cartCount for header
+    @ModelAttribute("cartCount")
+    public int addCartCount(Authentication authentication) {
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
             return 0;
         }
@@ -52,7 +54,7 @@ public class CartController {
         return userOpt.map(cartService::countCartItemsByUser).orElse(0);
     }
 
-    // Add to cart via AJAX
+    // Add to cart via AJAX (this is now the sole handler for this mapping)
     @PostMapping("/add-to-cart/{plantId}")
     @ResponseBody
     public Map<String, Object> addToCartAjax(@PathVariable Long plantId,

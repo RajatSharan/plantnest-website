@@ -18,4 +18,5 @@ public interface PlantService {
     void delete(Long id);
 
      List<Plant> searchPlants(String keyword);
+
 }

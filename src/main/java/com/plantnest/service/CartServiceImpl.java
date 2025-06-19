@@ -34,12 +34,16 @@ public class CartServiceImpl implements CartService {
         if (existingItem.isPresent()) {
             CartItem item = existingItem.get();
             item.setQuantity(item.getQuantity() + 1);
+            // Fix: Update subtotal when quantity changes
+            item.setSubtotal(plant.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
             cartRepository.save(item);
         } else {
             CartItem newItem = new CartItem();
             newItem.setUser(user);
             newItem.setPlant(plant);
             newItem.setQuantity(1);
+            // Fix: Calculate and set subtotal for new items
+            newItem.setSubtotal(plant.getPrice().multiply(BigDecimal.valueOf(newItem.getQuantity())));
             cartRepository.save(newItem);
         }
     }
@@ -94,6 +98,14 @@ public class CartServiceImpl implements CartService {
         if (optionalItem.isPresent()) {
             CartItem item = optionalItem.get();
             item.setQuantity(quantity);
+            // Fix: Update subtotal when quantity changes
+            // This assumes CartItem's Plant object and its price are accessible
+            if (item.getPlant() != null && item.getPlant().getPrice() != null) {
+                item.setSubtotal(item.getPlant().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+            } else {
+                System.err.println("WARNING: Plant or Plant price is null for cart item " + itemId + ". Subtotal not updated.");
+                // Consider throwing an exception or handling this edge case more robustly if plant/price can be null
+            }
             cartRepository.save(item);
         }
     }
@@ -107,7 +119,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItem> getCartItems(User user) {
-        // This method just calls getCartItemsByUser, which is fine.
         return getCartItemsByUser(user);
     }
 

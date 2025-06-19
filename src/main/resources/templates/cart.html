@@ -1,56 +1,279 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>My Cart</title>
+    <title>My Cart - PlantNest</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/css/styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        .cart-summary {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        /* General styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fbf8; /* Light green-ish background */
+            color: #333;
         }
-        .cart-summary h5 {
-            color: #28a745;
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+            color: #2e7d32; /* Dark green for headings */
         }
-        .quantity-btn {
-            width: 32px;
-            height: 32px;
-            line-height: 1;
-        }
-        .btn-place-order {
-            padding: 10px 25px;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        .img-thumbnail {
-            object-fit: cover;
-            height: 60px;
-            width: 60px;
-        }
+
+        /* Cart Header */
         .cart-header {
             background: linear-gradient(90deg, #e8f5e9, #c8e6c9);
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+            border-radius: 15px; /* More rounded corners */
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1); /* Stronger shadow */
             border: 1px solid #a5d6a7;
+            padding: 3rem 2rem; /* More padding */
+            margin-bottom: 2.5rem; /* More space below header */
+            position: relative;
+            overflow: hidden; /* For pseudo-elements */
         }
         .cart-header h2 {
-            font-size: 2rem;
+            font-size: 2.5rem; /* Larger heading */
             font-weight: 700;
-            color: #2e7d32;
+            color: #216d21; /* Even darker green for emphasis */
+            position: relative;
+            z-index: 1; /* Ensure text is above background elements */
         }
-        .fa-shopping-cart.fa-bounce {
-            animation: bounce 1s infinite alternate;
+        .cart-header p {
+            font-size: 1.1rem;
+            color: #4a6a4a;
+            position: relative;
+            z-index: 1;
+        }
+        /* No bouncing cart icon on this page */
+        /* .fa-shopping-cart.fa-bounce {
+            animation: bounce 1.5s infinite alternate ease-in-out;
+            color: #388e3c;
         }
         @keyframes bounce {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-5px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0); }
+        } */
+        /* Decorative elements for cart header */
+        .cart-header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 80px;
+            height: 80px;
+            background-color: rgba(46, 125, 50, 0.1); /* Semi-transparent green circle */
+            border-radius: 50%;
+            transform: rotate(45deg);
+        }
+        .cart-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(76, 175, 80, 0.08); /* Another semi-transparent circle */
+            border-radius: 50%;
+            transform: rotate(-30deg);
+        }
+
+
+        /* Cart Table */
+        .table-cart {
+            border-collapse: separate;
+            border-spacing: 0 1rem; /* Space between rows */
+        }
+        .table-cart th, .table-cart td {
+            padding: 1.25rem 1rem; /* More padding in cells */
+            vertical-align: middle;
+        }
+        .table-cart thead th {
+            background-color: #d4edda; /* Lighter green for header */
+            color: #155724;
+            border: none;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .table-cart tbody tr {
+            background-color: #ffffff;
+            border-radius: 10px; /* Rounded corners for rows */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            transition: all 0.2s ease-in-out;
+        }
+        .table-cart tbody tr:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .img-thumbnail {
+            object-fit: cover;
+            height: 80px; /* Larger image */
+            width: 80px;
+            border-radius: 8px; /* Slightly rounded images */
+            border: 1px solid #e0e0e0;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Space between buttons and input */
+        }
+        .quantity-btn {
+            width: 36px; /* Slightly larger buttons */
+            height: 36px;
+            border-radius: 50%; /* Circular buttons */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .quantity-btn:hover {
+            background-color: #28a745;
+            color: #fff;
+        }
+        .quantity-input {
+            width: 50px; /* Adjust width as needed */
+            text-align: center;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 0.375rem 0.75rem;
+        }
+        .remove-item-btn {
+            color: #dc3545;
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+        .remove-item-btn:hover {
+            color: #c82333;
+            transform: scale(1.1);
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            background-color: #ffffff;
+            padding: 25px; /* More padding */
+            border-radius: 15px; /* More rounded */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); /* More pronounced shadow */
+            border: 1px solid #e0e0e0;
+        }
+        .cart-summary h5 {
+            color: #1e7d32;
+            font-size: 1.6rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed #e9ecef; /* Dashed line for total */
+        }
+        .btn-place-order {
+            padding: 12px 30px; /* Larger button */
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-radius: 8px; /* Rounded button */
+            background-color: #28a745;
+            border-color: #28a745;
+            transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+        }
+        .btn-place-order:hover {
+            background-color: #218838;
+            border-color: #1e7d32;
+            transform: translateY(-2px);
+        }
+        .btn-outline-secondary {
+            border-color: #6c757d;
+            color: #6c757d;
+            font-weight: 500;
+            border-radius: 8px;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        /* Empty Cart State */
+        .empty-cart-message {
+            padding: 4rem 2rem;
+            border: 2px dashed #a5d6a7;
+            border-radius: 15px;
+            background-color: #f0fdf0;
+            color: #388e3c;
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .empty-cart-message .fa-leaf {
+            font-size: 3rem;
+            color: #4CAF50;
+        }
+        .empty-cart-message .alert-link {
+            color: #1e7d32;
+            font-weight: 600;
+        }
+        .empty-cart-message .alert-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 767.98px) {
+            .cart-header h2 {
+                font-size: 2rem;
+            }
+            .cart-header p {
+                font-size: 1rem;
+            }
+            .table-cart thead {
+                display: none; /* Hide header on small screens */
+            }
+            .table-cart tbody, .table-cart tr, .table-cart td {
+                display: block; /* Make table elements stack */
+                width: 100%;
+            }
+            .table-cart tr {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #eee;
+            }
+            .table-cart td {
+                text-align: right;
+                padding-left: 50%; /* Space for pseudo-element labels */
+                position: relative;
+            }
+            .table-cart td::before {
+                content: attr(data-label); /* Use data-label for content */
+                position: absolute;
+                left: 1rem;
+                width: calc(50% - 1rem);
+                text-align: left;
+                font-weight: 600;
+                color: #555;
+            }
+            .cart-summary {
+                padding: 20px;
+            }
+            .btn-place-order {
+                width: 100%;
+                margin-top: 15px;
+            }
+            .d-flex.justify-content-between.mt-4 {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .quantity-controls {
+                justify-content: flex-end; /* Align controls to right on small screens */
+            }
+            .remove-item-btn {
+                float: right;
+            }
         }
     </style>
 </head>
@@ -60,96 +283,272 @@
     <div id="content">
         <div class="container py-5">
             <div class="cart-header text-center mb-4 py-4">
-                <h2 class="d-flex justify-content-center align-items-center gap-2">
-                    <i class="fas fa-shopping-cart fa-bounce"></i> Your Shopping Cart
+                <h2 class="d-flex justify-content-center align-items-center">
+                    Your Shopping Cart
                 </h2>
-                <p class="text-muted mt-2">Review your items and proceed to checkout</p>
+                <p class="text-muted mt-3">Review your items and proceed to checkout</p>
             </div>
 
             <div th:if="${cartItems != null and !cartItems.isEmpty()}">
                 <div class="table-responsive">
-                    <table class="table table-striped align-middle">
+                    <table class="table table-cart align-middle">
                         <thead class="table-success">
-                            <tr>
-                                <th>Product</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Subtotal</th>
-                                <th>Remove</th>
-                            </tr>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th>Remove</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="item : ${cartItems}">
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img th:src="@{${item.plant.imageUrl}}" class="img-thumbnail me-3" alt="Plant Image">
-                                        <div>
-                                            <strong th:text="${item.plant.name}">Plant Name</strong>
-                                            <div class="text-muted small">Est. delivery: 3–5 days</div>
-                                        </div>
+                        <tr th:each="item : ${cartItems}" th:id="'cart-item-' + ${item.id}">
+                            <td data-label="Product">
+                                <div class="d-flex align-items-center">
+                                    <img th:src="@{'/images/' + ${item.plant.imageUrl}}"
+                                         class="img-thumbnail me-3"
+                                         alt="Plant Image"
+                                         onerror="this.onerror=null;this.src='/images/placeholder.png';">
+                                    <div>
+                                        <strong th:text="${item.plant.name}">Plant Name</strong>
+                                        <div class="text-muted small">Est. delivery: 3–5 days</div>
                                     </div>
-                                </td>
-                                <td>$<span th:text="${#numbers.formatDecimal(item.plant.price, 1, 'COMMA', 2, 'POINT')}">0.00</span></td>
-                                <td>
-                                    <div class="input-group" style="max-width: 120px;">
-                                        <button class="btn btn-outline-secondary btn-sm quantity-btn decrease" type="button" th:attr="data-item-id=${item.id}">−</button>
-                                        <input type="text" class="form-control text-center" th:value="${item.quantity}" readonly th:attr="data-item-id=${item.id}">
-                                        <button class="btn btn-outline-secondary btn-sm quantity-btn increase" type="button" th:attr="data-item-id=${item.id}">+</button>
-                                    </div>
-                                </td>
-                                <td>$<span th:text="${#numbers.formatDecimal(item.plant.price * item.quantity, 1, 'COMMA', 2, 'POINT')}">0.00</span></td>
-                                <td>
-                                    <button class="btn btn-outline-danger btn-sm remove-item-btn" type="button" th:attr="data-item-id=${item.id}">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                                </div>
+                            </td>
+                            <td data-label="Price">$<span th:text="${#numbers.formatDecimal(item.plant.price, 1, 'COMMA', 2, 'POINT')}">0.00</span></td>
+                            <td data-label="Quantity">
+                                <div class="input-group quantity-controls" style="max-width: 140px;">
+                                    <button class="btn btn-outline-secondary quantity-btn decrease" type="button" th:attr="data-item-id=${item.id}">−</button>
+                                    <input type="text" class="form-control text-center quantity-input" th:value="${item.quantity}" readonly th:attr="data-item-id=${item.id}, data-price=${item.plant.price}">
+                                    <button class="btn btn-outline-secondary quantity-btn increase" type="button" th:attr="data-item-id=${item.id}">+</button>
+                                </div>
+                            </td>
+                            <td data-label="Subtotal">$<span class="item-subtotal" th:id="'item-subtotal-' + ${item.id}" th:text="${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}">0.00</span></td>
+                            <td data-label="Remove">
+                                <button class="btn remove-item-btn" type="button" th:attr="data-item-id=${item.id}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div class="row mt-4">
+                <div class="row mt-5">
                     <div class="col-md-6 offset-md-6">
-                        <div class="cart-summary">
-                            <!-- Coupon Form -->
-                            <form th:action="@{/cart/apply-coupon}" method="post" class="mb-3 d-flex">
+                        <div class="cart-summary sticky-top" style="top: 20px;">
+                            <h4 class="mb-4 text-center">Order Summary</h4>
+                            <form th:action="@{/cart/apply-coupon}" method="post" class="mb-4 d-flex">
                                 <input type="hidden" name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                <input type="text" name="couponCode" class="form-control me-2" placeholder="Enter coupon code" th:value="${couponCode}">
+                                <input type="text" name="couponCode" class="form-control me-2" placeholder="Have a coupon code?" th:value="${couponCode}">
                                 <button type="submit" class="btn btn-outline-success">Apply</button>
                             </form>
 
-                            <!-- Coupon Status Message -->
                             <div th:if="${couponMessage}" class="alert alert-info p-2 py-1 mb-3" th:text="${couponMessage}"></div>
 
-                            <p class="mb-2">Subtotal: <strong>$<span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong></p>
-
-                            <!-- Coupon Discount -->
-                            <div th:if="${discountAmount != null and discountAmount > 0}">
-                                <p class="mb-2 text-success">Discount: -$<span th:text="${#numbers.formatDecimal(discountAmount, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Cart Subtotal:</span>
+                                <strong>$<span id="cart-total-price" th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
                             </div>
 
-                            <p class="mb-2 text-muted">Tax (5%): $<span th:text="${#numbers.formatDecimal(taxAmount, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
-                            
-                            <h5>Total: $<span th:text="${#numbers.formatDecimal(grandTotal, 1, 'COMMA', 2, 'POINT')}">0.00</span></h5>
+                            <div th:if="${discountAmount != null and discountAmount > 0}" class="d-flex justify-content-between mb-2 text-success fw-bold">
+                                <span>Discount:</span>
+                                <span>-$<span id="cart-discount-amount" th:text="${#numbers.formatDecimal(discountAmount, 1, 'COMMA', 2, 'POINT')}">0.00</span></span>
+                            </div>
 
-                            <div class="d-flex justify-content-between mt-4">
+                            <div class="d-flex justify-content-between mb-2 text-muted small">
+                                <span>Tax (5%):</span>
+                                <span>$<span id="cart-tax-amount" th:text="${#numbers.formatDecimal(taxAmount, 1, 'COMMA', 2, 'POINT')}">0.00</span></span>
+                            </div>
+
+                            <h5 class="d-flex justify-content-between mt-4 pt-3">
+                                <span>Order Total:</span>
+                                <span>$<span id="cart-grand-total" th:text="${#numbers.formatDecimal(grandTotal, 1, 'COMMA', 2, 'POINT')}">0.00</span></span>
+                            </h5>
+
+                            <div class="d-grid gap-3 mt-4">
+                                <a th:href="@{/checkout}" class="btn btn-success btn-place-order">Proceed to Checkout</a>
                                 <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-arrow-left me-1"></i> Continue Shopping
+                                    <i class="fas fa-arrow-left me-2"></i> Continue Shopping
                                 </a>
-                                <a th:href="@{/checkout}" class="btn btn-success btn-place-order">Place Order</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div th:if="${cartItems == null or cartItems.isEmpty()}" class="alert alert-info text-center mt-4">
-                Your cart is empty. <a th:href="@{/dashboard}" class="alert-link">Browse plants</a> to add some green to your life.
+            <div th:if="${cartItems == null or cartItems.isEmpty()}" class="empty-cart-message">
+                <i class="fas fa-leaf"></i>
+                <p>Your cart is looking a little empty.</p>
+                <a th:href="@{/dashboard}" class="btn btn-success btn-lg"><i class="fas fa-plus me-2"></i> Start Shopping</a>
             </div>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="/js/cart.js"></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    // Function to format numbers as currency
+    function formatCurrency(value) {
+        return parseFloat(value).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    // Function to update item subtotal and recalculate cart totals on the frontend
+    function updateFrontendTotals() {
+        let newTotalPrice = 0;
+        document.querySelectorAll('.table-cart tbody tr').forEach(row => {
+            const quantityInput = row.querySelector('.quantity-input');
+            const itemId = quantityInput.dataset.itemId;
+            const price = parseFloat(quantityInput.dataset.price);
+            const quantity = parseInt(quantityInput.value);
+
+            const itemSubtotal = price * quantity;
+            row.querySelector('.item-subtotal').textContent = formatCurrency(itemSubtotal);
+            newTotalPrice += itemSubtotal;
+        });
+
+        // Get values from hidden input or initial model values (for discount/tax logic)
+        const initialDiscountAmount = /*[[${discountAmount != null ? discountAmount : 0}]]*/ 0;
+        const initialTaxRate = 0.05; // Assuming a fixed 5% tax rate as per your current calculation
+
+        let newTaxAmount = newTotalPrice * initialTaxRate;
+        let newGrandTotal = newTotalPrice - initialDiscountAmount + newTaxAmount;
+
+        document.getElementById('cart-total-price').textContent = formatCurrency(newTotalPrice);
+        document.getElementById('cart-tax-amount').textContent = formatCurrency(newTaxAmount);
+        document.getElementById('cart-grand-total').textContent = formatCurrency(newGrandTotal);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle quantity changes (client-side visual update)
+        document.querySelectorAll('.quantity-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.dataset.itemId;
+                const quantityInput = document.querySelector(`.quantity-input[data-item-id="${itemId}"]`);
+                let currentQuantity = parseInt(quantityInput.value);
+                let newQuantity = currentQuantity;
+
+                if (this.classList.contains('increase')) {
+                    newQuantity = currentQuantity + 1;
+                } else if (this.classList.contains('decrease')) {
+                    newQuantity = Math.max(1, currentQuantity - 1); // Prevent quantity from going below 1
+                }
+
+                if (newQuantity !== currentQuantity) {
+                    quantityInput.value = newQuantity;
+                    // Visually update the item subtotal and cart totals
+                    updateFrontendTotals();
+
+                    const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+                    const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+                    // Call backend to update quantity
+                    fetch(`/cart/updateQuantity/${itemId}?quantity=${newQuantity}`, {
+                        method: 'POST', // Or PATCH/PUT depending on your REST convention
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [csrfHeader]: csrfToken
+                        }
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                console.error('Failed to update quantity');
+                                // Handle errors, maybe revert UI quantity or show error message
+                                // Optional: refetch cart data from server to ensure UI is in sync
+                                // location.reload(); // Less ideal for UX
+                            }
+                            return response.json(); // Assuming your endpoint returns updated cart data or success status
+                        })
+                        .then(data => {
+                            // If your backend returns the new grandTotal, totalPrice, etc., update the UI here
+                            console.log('Quantity updated successfully:', data);
+                            // This is crucial: if the backend sends updated cart totals, use them!
+                            if (data && data.totalPrice !== undefined) {
+                                document.getElementById('cart-total-price').textContent = formatCurrency(data.totalPrice);
+                                document.getElementById('cart-tax-amount').textContent = formatCurrency(data.taxAmount);
+                                document.getElementById('cart-grand-total').textContent = formatCurrency(data.grandTotal);
+                                // Ensure item subtotal is also updated if the backend sends it
+                                if (data.updatedItemSubtotal !== undefined) {
+                                    document.querySelector(`#item-subtotal-${itemId}`).textContent = formatCurrency(data.updatedItemSubtotal);
+                                }
+                            } else {
+                                updateFrontendTotals(); // Fallback to client-side calc if backend doesn't return full totals
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error updating quantity:', error);
+                            // Handle network or other errors
+                        });
+                }
+            });
+        });
+
+        document.querySelectorAll('.remove-item-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.dataset.itemId;
+                if (confirm('Are you sure you want to remove this item from your cart?')) {
+                    const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+                    const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+                    fetch(`/cart/remove/${itemId}`, {
+                        method: 'POST', // Or DELETE
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [csrfHeader]: csrfToken
+                        }
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                console.error('Failed to remove item');
+                                // Handle error
+                                return;
+                            }
+                            return response.json(); // Assuming it returns updated cart data
+                        })
+                        .then(data => {
+                            console.log('Item removed successfully:', data);
+                            // Remove the row from the DOM
+                            document.getElementById('cart-item-' + itemId).remove();
+                            // Update totals after removal
+                            // If backend sends updated cart totals, use them!
+                            if (data && data.totalPrice !== undefined) {
+                                document.getElementById('cart-total-price').textContent = formatCurrency(data.totalPrice);
+                                document.getElementById('cart-tax-amount').textContent = formatCurrency(data.taxAmount);
+                                document.getElementById('cart-grand-total').textContent = formatCurrency(data.grandTotal);
+                            } else {
+                                // Fallback to client-side calc if backend doesn't provide updated totals
+                                updateFrontendTotals();
+                            }
+
+                            // Check if cart is now empty
+                            if (document.querySelectorAll('.table-cart tbody tr').length === 0) {
+                                // Dynamically replace the table with the empty cart message
+                                const cartContainer = document.querySelector('#content > .container');
+                                cartContainer.innerHTML = `
+                                <div class="empty-cart-message">
+                                    <i class="fas fa-leaf"></i>
+                                    <p>Your cart is looking a little empty.</p>
+                                    <a href="/dashboard" class="btn btn-success btn-lg"><i class="fas fa-plus me-2"></i> Start Shopping</a>
+                                </div>
+                            `;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error removing item:', error);
+                        });
+                }
+            });
+        });
+    });
+    /*]]>*/
+</script>
 </body>
 </html>

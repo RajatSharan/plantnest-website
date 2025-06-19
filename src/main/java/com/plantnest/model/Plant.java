@@ -18,34 +18,38 @@ public class Plant implements Serializable {
     @NotBlank(message = "Plant name is required")
     private String name;
 
+    @NotBlank(message = "Image filename is required")
+    @Column(name = "image") 
+    private String image;
+
     @NotNull(message = "Price is required")
     @Min(value = 0, message = "Price must be non-negative")
     private BigDecimal price;
 
     @Column(name = "image_url")
-    @NotBlank(message = "Image URL is required") // Added NotBlank here for consistency
-    private String imageUrl; // This field will store the full path (e.g., /images/AloeVera.jpg)
+    private String imageUrl;
 
     private String description;
 
     public Plant() {}
 
-    // Updated constructor - 'image' field removed
-    public Plant(String name, String description, BigDecimal price, String imageUrl) {
+
+    public Plant(String name, String image, BigDecimal price, String imageUrl, String description) {
         this.name = name;
-        this.description = description; // Added description to constructor
+        this.image = image;
         this.price = price;
         this.imageUrl = imageUrl;
+        this.description = description;
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    // Removed getImage() and setImage() methods
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
 
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }

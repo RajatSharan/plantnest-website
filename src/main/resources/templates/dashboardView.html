@@ -1,15 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout(~{::content}, true)}"> <div th:fragment="content">
-    <div class="container-fluid px-4 py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h4 class="fw-bold">Welcome Back!</h4>
-                <p>Hello <span th:text="${user.firstName}">User</span>, shop some of our newest plants</p>
-            </div>
-        </div>
-=======
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="'PlantNest - Dashboard'">PlantNest - Dashboard</title>
@@ -21,8 +10,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
->>>>>>> ffe4041c14104a697a157903de2bb3d87418fd5a
-
 
     <style>
         :root {
@@ -30,160 +17,137 @@
             --darker-green: #218838;
             --light-green-bg: #d1fae5;
             --text-color: #333;
-            --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Slightly more prominent shadow */
+            --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
-
         body {
             font-family: 'Poppins', sans-serif;
             color: var(--text-color);
             background-color: #f8f9fa;
         }
-
         .navbar {
             background-color: var(--light-green-bg);
             border-bottom: 1px solid var(--primary-green);
         }
-
         .navbar-brand {
             font-weight: 700;
             color: var(--primary-green) !important;
-            font-size: 1.8rem; /* Slightly larger brand */
+            font-size: 1.8rem;
         }
-
         .navbar-nav .nav-link {
             color: var(--primary-green) !important;
             font-weight: 500;
         }
-
         .btn-success {
             background-color: var(--primary-green);
             border-color: var(--primary-green);
-            padding: 10px 20px; /* More generous padding */
+            padding: 10px 20px;
             font-size: 1rem;
-            border-radius: 8px; /* Slightly more rounded */
-            transition: all 0.3s ease; /* Smooth transition for hover */
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
-
         .btn-success:hover {
             background-color: var(--darker-green);
             border-color: var(--darker-green);
-            transform: translateY(-2px); /* Subtle lift on hover */
+            transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-
-        /* Hero Section - New Style */
         .hero-section {
-            background: linear-gradient(rgba(40, 167, 69, 0.7), rgba(40, 167, 69, 0.7)), url('/images/hero-bg.jpg') no-repeat center center;
+            background: linear-gradient(rgba(40, 167, 69, 0.7), rgba(40, 167, 69, 0.7)), url('/images/hero-banner.jpg') no-repeat center center;
             background-size: cover;
             color: white;
             padding: 100px 0;
-            margin-bottom: 40px; /* More spacing below hero */
+            margin-bottom: 40px;
             text-align: center;
-            border-radius: 15px; /* Rounded corners for hero */
+            border-radius: 15px;
             box-shadow: var(--card-shadow);
         }
-
         .hero-section h1 {
             font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-
         .hero-section p {
             font-size: 1.25rem;
             margin-bottom: 30px;
         }
-
         .search-bar {
-            max-width: 600px; /* Wider search bar */
+            max-width: 600px;
             margin: 0 auto;
         }
-
         .search-bar .form-control {
-            border-radius: 50px; /* Pill shape for search input */
+            border-radius: 50px;
             padding: 10px 20px;
             border: 1px solid var(--primary-green);
         }
-
         .search-bar .btn-outline-success {
-            border-radius: 50px; /* Pill shape for search button */
+            border-radius: 50px;
             margin-left: 10px;
             padding: 10px 25px;
         }
-
         .product-card {
             background-color: #fff;
-            border-radius: 15px; /* More rounded corners */
+            border-radius: 15px;
             box-shadow: var(--card-shadow);
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transition for hover */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
             display: flex;
             flex-direction: column;
             height: 100%;
-            overflow: hidden; /* Ensures rounded corners on image */
+            overflow: hidden;
         }
-
         .product-card:hover {
-            transform: translateY(-8px); /* More pronounced lift */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* More intense shadow on hover */
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
-
         .product-card img {
-            border-top-left-radius: 15px; /* Match card border-radius */
-            border-top-right-radius: 15px; /* Match card border-radius */
-            max-height: 220px; /* Slightly taller images */
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            max-height: 220px;
             object-fit: cover;
             width: 100%;
-            transition: transform 0.5s ease; /* Zoom effect on image hover */
+            transition: transform 0.5s ease;
         }
-
         .product-card:hover img {
-            transform: scale(1.05); /* Subtle zoom on image hover */
+            transform: scale(1.05);
         }
-
         .product-card .card-body {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            padding: 20px; /* Increased padding */
+            padding: 20px;
         }
-
         .product-card .card-title {
-            font-size: 1.5rem; /* Larger title */
+            font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 8px;
-            color: var(--primary-green); /* Green title */
+            color: var(--primary-green);
         }
-
         .product-card .card-text {
-            font-size: 1rem; /* Slightly larger description */
+            font-size: 1rem;
             color: #555;
             margin-bottom: 15px;
             flex-grow: 1;
             line-height: 1.5;
         }
-
         .price-and-button {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: auto;
-            padding-top: 15px; /* Spacing between description and price/button */
-            border-top: 1px solid #eee; /* Subtle separator */
+            padding-top: 15px;
+            border-top: 1px solid #eee;
         }
-
         .product-price {
-            font-size: 1.5rem; /* Larger price */
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--darker-green); /* Darker green for price */
+            color: var(--darker-green);
         }
-
         .add-to-cart-btn {
             background-color: var(--primary-green);
             color: white;
             border: none;
-            padding: 10px 25px; /* More padding for button */
-            border-radius: 50px; /* Pill shape */
+            padding: 10px 25px;
+            border-radius: 50px;
             transition: background-color 0.3s, transform 0.2s;
             width: auto;
             white-space: nowrap;
@@ -191,30 +155,24 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
         .add-to-cart-btn:hover {
             background-color: var(--darker-green);
             transform: translateY(-2px);
         }
-
         .footer {
             background-color: var(--darker-green);
             color: white;
-            padding: 40px 0; /* More padding for footer */
-            margin-top: 50px; /* More margin from content */
+            padding: 40px 0;
+            margin-top: 50px;
             text-align: center;
         }
-
         .footer p {
             margin-bottom: 0;
             font-size: 0.9rem;
         }
-
         .text-decoration-none {
             text-decoration: none;
         }
-
-        /* Adjustments for smaller screens */
         @media (max-width: 768px) {
             .hero-section h1 {
                 font-size: 2.5rem;
@@ -272,7 +230,7 @@
                                     <button
                                             class="add-to-cart-btn"
                                             type="button"
-                                            th:data-id="${plant.id}">
+                                            th:attr="data-id=${plant.id}">
                                         Buy Now
                                     </button>
                                 </div>
@@ -284,27 +242,6 @@
                     </div>
                 </div>
             </div>
-<<<<<<< HEAD
-        </div>
-
-        <div class="mt-5 mb-3">
-            <h5 class="fw-bold">Recent Activity</h5>
-        </div>
-        <div class="card p-3 shadow-sm">
-            <ul class="list-unstyled mb-0">
-                <li class="d-flex justify-content-between align-items-center py-2">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-arrow-right text-success me-2"></i>
-                        <span>Snake plant added to cart</span>
-                    </div>
-                    <strong>$18.00</strong>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-</html>
-=======
         </main>
     </div>
 </div>
@@ -320,21 +257,70 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/cart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Search input auto-submit
         const searchInput = document.getElementById('search-input');
         const searchForm = searchInput && searchInput.form;
         if (searchInput && searchForm) {
             searchInput.addEventListener('input', function () {
-                // Only submit if the input is cleared, not on every keystroke
                 if (this.value === '') {
                     searchForm.submit();
                 }
             });
         }
+
+        // Add-to-cart AJAX logic
+        const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+        document.querySelectorAll('.add-to-cart-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const plantId = this.getAttribute('data-id');
+                const headers = {};
+                if (csrfHeader && csrfToken) {
+                    headers[csrfHeader] = csrfToken;
+                }
+                fetch('/add-to-cart/' + plantId, {
+                    method: 'POST',
+                    headers: headers
+                })
+                    .then(async response => {
+                        if (!response.ok) {
+                            // Try to extract error message for debugging
+                            const text = await response.text();
+                            console.error('Add to cart failed:', text);
+                            throw new Error('Network response was not ok');
+                        }
+                        // Try to parse JSON, fallback to error if not JSON
+                        try {
+                            return await response.json();
+                        } catch (e) {
+                            throw new Error('Invalid JSON response');
+                        }
+                    })
+                    .then(data => {
+                        const cartCountElem = document.getElementById('cart-count');
+                        if (cartCountElem && data.cartCount !== undefined) {
+                            cartCountElem.textContent = data.cartCount;
+                            showTemporaryAlert('Added to cart!', 'success');
+                        }
+                    })
+                    .catch(error => {
+                        alert('Could not add to cart. Please try again.');
+                    });
+            });
+        });
+
+        // Optional: show a temporary alert
+        function showTemporaryAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+            alert.style.zIndex = 9999;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            setTimeout(() => alert.remove(), 2000);
+        }
     });
 </script>
 </body>
-</html> 
->>>>>>> ffe4041c14104a697a157903de2bb3d87418fd5a
+</html>
