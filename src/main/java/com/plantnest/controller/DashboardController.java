@@ -5,14 +5,12 @@ import com.plantnest.model.User;
 import com.plantnest.service.CartService;
 import com.plantnest.service.PlantService;
 import com.plantnest.service.UserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,16 +35,14 @@ public class DashboardController {
             return "redirect:/login";
         }
 
-        // ✅ Fix: Unwrap Optional<User>
         User user = userService.findByEmail(userDetails.getUsername())
-                               .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         int cartCount = cartService.countCartItemsByUser(user);
 
         List<Plant> products;
 
         if (query != null && !query.trim().isEmpty()) {
-            // ✅ Fix: make sure this method exists in PlantService
             products = plantService.searchPlants(query.trim());
         } else {
             products = plantService.getAllPlants();

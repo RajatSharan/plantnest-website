@@ -23,8 +23,6 @@ h2, h4, h5 {
 
 .btn-success:hover {
     background-color: #157347;
-<<<<<<< HEAD
-=======
 }
 
 .btn-outline-success {
@@ -41,5 +39,4 @@ input.form-control.rounded-pill {
 
 ul.list-unstyled li {
     font-size: 1rem;
->>>>>>> ffe4041c14104a697a157903de2bb3d87418fd5a
 }
