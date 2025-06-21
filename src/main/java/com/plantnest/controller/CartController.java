@@ -15,13 +15,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+// Removed @ControllerAdvice as it's not typically used on a @Controller class itself for general advice.
+// If you intend to use it for global exception handling or model attributes,
+// it should be in a separate class annotated with @ControllerAdvice.
+
+import jakarta.servlet.http.HttpServletRequest; // <-- NEW IMPORT
 
 import java.math.BigDecimal;
 import java.util.*;
 
 @Controller
-@ControllerAdvice
 public class CartController {
 
     @Autowired
@@ -79,7 +82,8 @@ public class CartController {
 
     // View cart
     @GetMapping("/cart")
-    public String viewCart(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String viewCart(Model model, @AuthenticationPrincipal UserDetails userDetails,
+                           HttpServletRequest request) { // <-- ADDED HttpServletRequest
         if (userDetails == null) return "redirect:/login";
 
         Optional<User> optionalUser = getUser(userDetails);
@@ -101,6 +105,7 @@ public class CartController {
         model.addAttribute("taxAmount", taxAmount);
         model.addAttribute("grandTotal", grandTotal);
         model.addAttribute("cartCount", cartService.countCartItemsByUser(user));
+        model.addAttribute("currentUri", request.getRequestURI()); // <-- NEW LINE: Pass current URI
 
         return "cart";
     }
@@ -109,7 +114,8 @@ public class CartController {
     @PostMapping("/cart/apply-coupon")
     public String applyCoupon(@RequestParam("couponCode") String couponCode,
                               @AuthenticationPrincipal UserDetails userDetails,
-                              Model model) {
+                              Model model,
+                              HttpServletRequest request) { // <-- ADDED HttpServletRequest
         if (userDetails == null) return "redirect:/login";
 
         Optional<User> optionalUser = getUser(userDetails);
@@ -151,6 +157,7 @@ public class CartController {
         model.addAttribute("couponMessage", couponMessage);
         model.addAttribute("couponCode", couponCode);
         model.addAttribute("cartCount", cartService.countCartItemsByUser(user));
+        model.addAttribute("currentUri", request.getRequestURI()); // <-- NEW LINE: Pass current URI
 
         return "cart";
     }

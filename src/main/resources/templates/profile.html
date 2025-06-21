@@ -1,187 +1,331 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Update Profile - PlantNest</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>PlantNest | Forgot Password</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+        :root {
+            --primary-green: #28a745; /* Consistent green accent */
+            --darker-green: #218838; /* Darker green for hover */
+            --text-color: #333;
+            --container-bg: rgba(255, 255, 255, 0.98); /* Slightly less transparent white */
+            --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Soft shadow */
+            --border-radius-lg: 15px; /* Larger border radius */
+            --input-border-color: #e0e0e0; /* Lighter border */
+            --input-focus-border: var(--primary-green); /* Green focus */
+            --input-focus-shadow: rgba(40, 167, 69, 0.25); /* Green shadow */
+            --alert-info-bg: #e0f2f7; /* Lighter blue for info messages */
+            --alert-info-color: #2a7f9b;
+            --alert-info-border: #bce8f1;
+        }
+
         body {
-            background-color: #e6f7ee; /* Light green background */
-            color: #212529; /* Darker text for better readability */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .container {
-            max-width: 650px;
-            margin: 3rem auto;
-            animation: fadeIn 0.8s ease-out; /* Simple fade-in animation */
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .card {
-            background-color: #ffffff;
-            padding: 2.5rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer shadow */
-            border: none;
-        }
-        h3 {
-            color: #28a745; /* Green for the heading */
-            font-weight: 600;
-            margin-bottom: 2rem;
+            /* Innovative Background Image Suggestion:
+               Use a high-resolution image of blurred green foliage, dappled sunlight through leaves,
+               or an abstract organic pattern that aligns with the 'PlantNest' theme.
+               Replace '/images/abstract-plant-background.jpg' with your chosen image path. */
+            background: url('/images/abstract-plant-background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
             position: relative;
+            overflow: hidden; /* Prevent scrollbar from background */
         }
-        h3::after {
+
+        /* Innovative Background Overlay with subtle animation */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* Combined dark overlay with a subtle, pulsating radial gradient */
+            background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
+            radial-gradient(circle at 10% 20%, rgba(40, 167, 69, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 90% 80%, rgba(40, 167, 69, 0.15) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundPulse 15s infinite alternate ease-in-out; /* Slower, smoother pulse */
+        }
+
+        @keyframes backgroundPulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                background-position: 0% 0%;
+            }
+            50% {
+                transform: scale(1.02); /* Slight zoom */
+                opacity: 0.95;
+                background-position: 100% 100%;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                background-position: 0% 0%;
+            }
+        }
+
+        .forgot-password-container { /* Renamed from .container for clarity and unique styling */
+            max-width: 450px; /* Slightly wider */
+            width: 100%; /* Ensures responsiveness */
+            padding: 45px; /* Increased padding */
+            background-color: var(--container-bg);
+            border-radius: var(--border-radius-lg); /* Larger radius */
+            box-shadow: var(--box-shadow); /* More prominent shadow */
+            color: var(--text-color);
+            transform: translateY(20px); /* Initial position for animation */
+            opacity: 0; /* Initial opacity for animation */
+            animation: fadeInSlideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; /* Smoother animation */
+            position: relative;
+            overflow: hidden; /* Ensure rounded corners clip content */
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-green); /* Made title green */
+            font-weight: 700; /* Bolder title */
+            margin-bottom: 30px; /* More space below title */
+            position: relative;
+            animation: fadeInSlideDown 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s forwards; /* Delayed animation */
+        }
+
+        h2::after { /* Animated underline for title */
             content: '';
             display: block;
             width: 60px;
             height: 4px;
-            background: #28a745;
+            background: var(--primary-green);
             margin: 10px auto 0;
             border-radius: 2px;
+            animation: expandLine 0.6s ease-out 0.4s forwards;
+            transform: scaleX(0);
         }
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
-            border-radius: 8px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
+
+        @keyframes expandLine {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
         }
-        .form-control {
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            border: 1px solid #ced4da;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+        @keyframes fadeInSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .form-control:focus {
-            border-color: #28a745;
-            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+
+        .form-group {
+            margin-bottom: 20px; /* Increased margin */
         }
+
         label {
+            display: block;
+            margin-bottom: 10px; /* Consistent label spacing */
+            color: var(--text-color);
             font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: #495057;
+            animation: fadeIn 0.6s ease-out forwards; /* Animation for labels */
+            opacity: 0;
         }
-        .btn {
+
+        .input-group { /* Wrapper for input and icon */
+            position: relative;
+            margin-bottom: 20px; /* Spacing between input groups */
+            animation: fadeIn 0.6s ease-out forwards; /* Animation for inputs */
+            opacity: 0;
+        }
+
+        .form-control { /* General style for inputs */
+            width: 100%;
+            padding: 12px 15px 12px 40px; /* More padding, space for icon */
+            border: 1px solid var(--input-border-color);
+            border-radius: 8px; /* More rounded */
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            background-color: #fcfcfc; /* Slightly off-white background */
+        }
+
+        .form-control:focus {
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 0 0.25rem var(--input-focus-shadow);
+            background-color: #ffffff;
+            outline: none; /* Remove default outline */
+        }
+
+        .input-group .input-icon { /* Icon inside input */
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999; /* Icon color */
+            transition: color 0.3s ease;
+            z-index: 2; /* Above input */
+        }
+
+        .input-group .form-control:focus + .input-icon {
+            color: var(--primary-green); /* Change icon color on focus */
+        }
+
+        .alert-info { /* Styling for info messages */
+            background-color: var(--alert-info-bg);
+            color: var(--alert-info-color);
+            border-color: var(--alert-info-border);
+            border-radius: 10px; /* More rounded alerts */
+            margin-bottom: 25px; /* More margin */
+            padding: 14px 20px; /* More padding */
+            font-weight: 500;
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .btn-custom { /* Consistent button styling */
+            width: 100%;
+            padding: 14px;
+            border: none;
             border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            font-size: 1.05rem;
-            transition: all 0.3s ease;
-        }
-        .btn-success {
-            background-color: #28a745;
-            border-color: #28a745;
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
-        }
-        .btn-success:hover {
-            background-color: #218838;
-            border-color: #1e7e34;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
-        }
-        .btn-outline-secondary {
-            color: #6c757d;
-            border-color: #6c757d;
-        }
-        .btn-outline-secondary:hover {
-            background-color: #6c757d;
-            color: #fff;
-            transform: translateY(-2px);
-        }
-        .form-check-input:checked {
-            background-color: #28a745;
-            border-color: #28a745;
-        }
-        .text-danger {
-            font-size: 0.875em;
-            margin-top: 0.25rem;
-        }
-        /* User name display */
-        .user-name-display {
-            font-size: 1.5rem;
+            background: linear-gradient(45deg, var(--primary-green), var(--darker-green)); /* Gradient button */
+            color: white;
+            font-size: 1.15rem;
             font-weight: 600;
-            color: #28a745;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3); /* Green shadow */
+            animation: fadeIn 0.6s ease-out 0.5s forwards;
+            opacity: 0;
+        }
+
+        .btn-custom:hover:not(:disabled) {
+            background: linear-gradient(45deg, var(--darker-green), #1e7030); /* Darker gradient on hover */
+            transform: translateY(-3px) scale(1.02); /* More pronounced lift and grow */
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4); /* Stronger green shadow */
+            filter: brightness(1.1); /* Slightly brighter on hover */
+        }
+
+        .btn-custom:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.6s ease-out 0.6s forwards;
+            opacity: 0;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+            color: var(--darker-green);
+            transform: translateX(2px); /* Subtle slide effect */
+        }
+
+        /* Generic fadeIn animation for staggered elements */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Staggered animation delays for form elements */
+        .form-group-animated {
+            opacity: 0; /* Hidden by default for animation */
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        .form-group-animated:nth-child(1) { animation-delay: 0.3s; } /* For email label/input group */
+        .form-group-animated:nth-child(2) { animation-delay: 0.4s; } /* For button */
+        .form-group-animated:nth-child(3) { animation-delay: 0.5s; } /* For back link */
+
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            .forgot-password-container {
+                margin: 30px auto;
+                padding: 30px;
+                max-width: 95%;
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+            .btn-custom {
+                font-size: 1rem;
+                padding: 12px 20px;
+            }
         }
     </style>
 </head>
 <body>
+<div class="forgot-password-container"> <h2>Forgot Password</h2>
 
-<div th:replace="fragments/header :: header(${user}, ${cartCount}, ${query})"></div>
-
-<div class="container">
-    <div class="card">
-        <h3 class="text-center">Update Profile</h3>
-
-        <div th:if="${success}" class="alert alert-success text-center" th:text="${success}"></div>
-
-        <form th:action="@{/profile/update}" th:object="${user}" method="post">
-            <input type="hidden" th:field="*{id}" />
-            <input type="hidden" name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
-            <div class="text-center user-name-display">
-                <span th:text="${(user.firstName != null ? user.firstName : '') + ' ' + (user.lastName != null ? user.lastName : '')}">Your Name</span>
-            </div>
-
-            <div class="mb-3">
-                <label for="email">Email</label>
-                <input type="email" th:field="*{email}" id="email" class="form-control" required>
-                <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-            </div>
-
-            <div class="mb-3">
-                <label for="firstName">First Name</label>
-                <input type="text" th:field="*{firstName}" id="firstName" class="form-control" required>
-                <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
-            </div>
-
-            <div class="mb-3">
-                <label for="lastName">Last Name</label>
-                <input type="text" th:field="*{lastName}" id="lastName" class="form-control" required>
-                <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
-            </div>
-
-            <div class="form-check form-switch mb-4 mt-4">
-                <input class="form-check-input" type="checkbox" id="togglePassword">
-                <label class="form-check-label" for="togglePassword">Change Password</label>
-            </div>
-
-            <div class="mb-3" id="passwordField" style="display:none;">
-                <label for="password">New Password</label>
-                <input type="password" th:field="*{password}" id="password" class="form-control">
-                <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                <a th:href="@{/dashboard}" class="btn btn-outline-secondary">Cancel</a>
-                <button class="btn btn-success" type="submit">Update Profile</button>
-            </div>
-        </form>
+    <div th:if="${param.emailSent}" class="alert alert-info form-group-animated" role="alert" style="animation-delay: 0.2s;">
+        If an account exists, a password reset link has been sent to your email.
     </div>
+
+    <form th:action="@{/forgot-password}" method="post">
+        <div class="form-group form-group-animated">
+            <label for="email">Email Address</label>
+            <div class="input-group">
+                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" required>
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+        </div>
+        <button type="submit" class="btn-custom form-group-animated" id="resetPasswordBtn" disabled style="animation-delay: 0.5s;">Reset Password</button>
+    </form>
+    <a th:href="@{/login}" class="back-link form-group-animated" style="animation-delay: 0.6s;">Back to Login</a>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.getElementById("togglePassword").addEventListener("change", function () {
-        const passwordField = document.getElementById("passwordField");
-        const passwordInput = document.getElementById("password");
+    document.addEventListener('DOMContentLoaded', function() {
+        const emailInput = document.getElementById('email');
+        const resetPasswordBtn = document.getElementById('resetPasswordBtn');
 
-        if (this.checked) {
-            passwordField.style.display = "block";
-            // Make password required when visible, but only if it's currently empty or has some value
-            // To avoid forcing input if user just toggles and untoggles
-            passwordInput.setAttribute("required", "required");
-        } else {
-            passwordField.style.display = "none";
-            passwordInput.removeAttribute("required");
-            passwordInput.value = ""; // Clear password field when hidden
+        function checkEmailInput() {
+            const emailValue = emailInput.value.trim();
+
+            if (emailValue !== '') {
+                resetPasswordBtn.removeAttribute('disabled');
+            } else {
+                resetPasswordBtn.setAttribute('disabled', 'disabled');
+            }
         }
+
+        // Attach event listener to the email input field
+        emailInput.addEventListener('input', checkEmailInput);
+
+        // Run checkEmailInput once on page load to set initial button state
+        checkEmailInput();
     });
 </script>
-<script src="/js/bootstrap.bundle.min.js"></script> </body>
+</body>
 </html>

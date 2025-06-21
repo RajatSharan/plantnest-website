@@ -1,3 +1,4 @@
+
 package com.plantnest.service;
 
 import com.plantnest.model.Plant;
@@ -16,12 +17,19 @@ public class PlantServiceImpl implements PlantService {
 
     @Override
     public List<Plant> getAllPlants() {
+
         return plantRepository.findAll();
     }
 
     @Override
     public List<Plant> searchByName(String name) {
         return plantRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    @Override
+    public List<Plant> searchPlants(String keyword) {
+        // Use the new repository method to search by name OR description
+        return plantRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword);
     }
 
     @Override
@@ -37,10 +45,5 @@ public class PlantServiceImpl implements PlantService {
     @Override
     public void delete(Long id) {
         plantRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Plant> searchPlants(String keyword) {
-        return plantRepository.findByNameContainingIgnoreCase(keyword); // Uses method from repository
     }
 }

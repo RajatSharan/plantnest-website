@@ -6,368 +6,288 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==+" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         :root {
-            --primary-green: #28a745; /* A fresh green for accents */
-            --darker-green: #218838; /* For hover states */
-            --gradient-start: #14532d; /* Darker green for gradient */
-            --gradient-end: #84cc16;   /* Lighter green for gradient */
+            --primary-green: #28a745; /* Consistent green accent */
+            --darker-green: #218838; /* Darker green for hover */
+            --light-green: #d4edda; /* For success messages */
             --text-color: #333;
             --container-bg: rgba(255, 255, 255, 0.98); /* Slightly transparent white */
             --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Soft shadow */
             --border-radius-lg: 15px;
-            --input-border-color: #ced4da;
-            --input-focus-border: #80bdff; /* Bootstrap's focus color */
-            --input-focus-shadow: rgba(0, 123, 255, 0.25);
-            --social-btn-bg: #f0f0f0;
-            --social-btn-hover-bg: #e0e0e0;
+            --input-border-color: #e0e0e0; /* Lighter border */
+            --input-focus-border: var(--primary-green); /* Green focus */
+            --input-focus-shadow: rgba(40, 167, 69, 0.25); /* Green shadow */
+            --alert-danger-bg: #fde7ea;
+            --alert-danger-color: #a72d3e;
+            --alert-danger-border: #fbc4ce;
         }
 
-        body, html {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif; /* Applied Poppins */
-            overflow-x: hidden; /* Prevent horizontal scroll */
-        }
-
-        .register-container {
-            display: flex;
-            min-height: 100vh; /* Use min-height to allow content to push height */
-            /* Animation for the whole container */
-            animation: fadeIn 1s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .register-image {
-            flex: 1;
-            background: url('/images/register-bg.jpg') no-repeat center center;
+        body {
+            background: url('/images/abstract-plant-background.jpg') no-repeat center center fixed;
             background-size: cover;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px; /* Added vertical padding for small screens */
             position: relative;
-            min-height: 100%; /* Ensure it takes full height when side-by-side */
+            overflow: hidden; /* Prevent scrollbar from background */
         }
 
-        .register-image::before { /* Overlay for the image */
+        body::before {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.2); /* Subtle dark overlay */
-            z-index: 1;
+            background: linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)),
+            radial-gradient(circle at 10% 20%, rgba(40, 167, 69, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 90% 80%, rgba(40, 167, 69, 0.15) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundPulse 15s infinite alternate ease-in-out;
         }
 
-        .register-form-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column; /* Allows content to stack and scroll if needed */
-            align-items: center;
-            justify-content: center; /* Center form vertically within its container */
+        @keyframes backgroundPulse {
+            0% { transform: scale(1); opacity: 1; background-position: 0% 0%; }
+            50% { transform: scale(1.02); opacity: 0.95; background-position: 100% 100%; }
+            100% { transform: scale(1); opacity: 1; background-position: 0% 0%; }
+        }
+
+        .register-container {
+            max-width: 500px;
+            width: 100%;
+            padding: 45px;
             background-color: var(--container-bg);
-            padding: 40px 20px; /* Adjusted padding for horizontal breathing room */
-            overflow-y: auto; /* Allow scrolling for small screens */
-            min-width: 320px; /* Prevent form container from becoming too narrow */
-        }
-
-        .form-box {
-            width: 100%; /* Take full width of its parent (register-form-container) */
-            max-width: 450px; /* Maximum width for the form itself */
-            padding: 30px; /* Padding inside the box */
-            box-shadow: var(--box-shadow); /* Applied shadow */
-            border-radius: var(--border-radius-lg); /* Rounded corners */
-            background-color: white; /* Explicitly white background */
-            /* Animation for the form box */
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow);
+            color: var(--text-color);
             transform: translateY(20px);
             opacity: 0;
-            animation: fadeInSlideUp 0.8s ease-out 0.3s forwards; /* Delayed animation */
+            animation: fadeInSlideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            position: relative;
+            overflow: hidden;
+            /* Added for scrolling on overflow */
+            max-height: 90vh; /* Limit height to 90% of viewport height */
+            overflow-y: auto; /* Enable vertical scrolling */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            padding-bottom: 20px; /* Ensure padding at the bottom for scrollable content */
         }
 
-        @keyframes fadeInSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Custom scrollbar for webkit browsers */
+        .register-container::-webkit-scrollbar {
+            width: 8px;
         }
+        .register-container::-webkit-scrollbar-track {
+            background: rgba(241, 241, 241, 0.1); /* Light, transparent track */
+            border-radius: 10px;
+        }
+        .register-container::-webkit-scrollbar-thumb {
+            background: rgba(40, 167, 69, 0.4); /* Semi-transparent green thumb */
+            border-radius: 10px;
+        }
+        .register-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(40, 167, 69, 0.6); /* Darker on hover */
+        }
+
+        @keyframes fadeInSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.2rem; /* Larger font size */
+            text-align: center; color: var(--primary-green); font-weight: 700; margin-bottom: 30px;
+            position: relative; animation: fadeInSlideDown 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s forwards;
+        }
+        h2::after {
+            content: ''; display: block; width: 60px; height: 4px; background: var(--primary-green);
+            margin: 10px auto 0; border-radius: 2px; animation: expandLine 0.6s ease-out 0.4s forwards;
+            transform: scaleX(0);
+        }
+        @keyframes expandLine { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+        @keyframes fadeInSlideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .form-group-animated {
+            position: relative; margin-bottom: 20px; animation: fadeIn 0.6s ease-out forwards; opacity: 0;
+        }
+        .form-group-animated label {
+            position: absolute; top: 12px; left: 40px; font-size: 1rem; color: #999;
+            pointer-events: none; transition: all 0.2s ease-out; background-color: var(--container-bg);
+            padding: 0 5px; z-index: 1;
+        }
+        .form-group-animated input {
+            width: 100%; padding: 12px 15px 12px 45px; border: 1px solid var(--input-border-color);
+            border-radius: 8px; font-size: 1rem; background-color: #fcfcfc;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; z-index: 2;
+        }
+        .form-group-animated input:focus + label,
+        .form-group-animated input:not(:placeholder-shown) + label {
+            top: -12px; left: 35px; font-size: 0.8rem; color: var(--primary-green);
+            transform: scale(0.9); font-weight: 500;
+        }
+        .form-group-animated input:focus {
+            border-color: var(--input-focus-border); box-shadow: 0 0 0 0.25rem var(--input-focus-shadow);
+            background-color: #ffffff; outline: none;
+        }
+        .input-icon {
+            position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #999;
+            transition: color 0.3s ease; z-index: 3;
+        }
+        .form-group-animated input:focus ~ .input-icon,
+        .form-group-animated input:not(:placeholder-shown) ~ .input-icon {
             color: var(--primary-green);
-            font-weight: 700; /* Bolder */
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+        .alert { border-radius: 10px; margin-bottom: 25px; padding: 14px 20px; font-weight: 500;
+            animation: fadeIn 0.6s ease-out forwards; opacity: 0; }
+        .alert-success { background-color: var(--light-green); color: #1a6d2b; border-color: #bfe6c7; }
+        .alert-danger { background-color: var(--alert-danger-bg); color: var(--alert-danger-color); border-color: var(--alert-danger-border); }
 
-        .form-group label { /* Added label styling for clarity */
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--text-color);
+        .btn-custom {
+            background: linear-gradient(45deg, var(--primary-green), var(--darker-green)); color: white;
+            border-radius: 8px; padding: 14px 25px; font-size: 1.15rem; font-weight: 600;
+            transition: all 0.3s ease; border: none; box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            animation: fadeIn 0.6s ease-out forwards; opacity: 0;
         }
-
-        .form-group input[type="text"],
-        .form-group input[type="email"], /* Added email type */
-        .form-group input[type="tel"], /* Added tel type */
-        .form-group input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--input-border-color);
-            border-radius: 8px; /* Slightly more rounded */
-            font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        .btn-custom:hover:not(:disabled) {
+            background: linear-gradient(45deg, var(--darker-green), #1e7030);
+            transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+            filter: brightness(1.1);
         }
+        .btn-custom:disabled { background: #cccccc; cursor: not-allowed; opacity: 0.6; transform: none; box-shadow: none; }
 
-        .form-group input[type="text"]:focus,
-        .form-group input[type="email"]:focus,
-        .form-group input[type="tel"]:focus,
-        .form-group input[type="password"]:focus {
-            border-color: var(--input-focus-border);
-            box-shadow: 0 0 0 0.25rem var(--input-focus-shadow);
-            outline: none;
-        }
-
-        /* Error message styling for Thymeleaf validation errors */
-        .text-danger { /* Renamed from span[th:errors] for more general use with div/p */
-            color: #dc3545; /* Bootstrap danger red */
-            font-size: 0.875em;
-            margin-top: 5px;
-            display: block;
-        }
-
-        .form-group.checkbox {
-            display: flex;
-            align-items: center;
-            margin-top: 15px; /* Spacing */
-            margin-bottom: 25px;
-        }
-
-        .form-group.checkbox input[type="checkbox"] {
-            margin-right: 10px;
-            width: 18px; /* Size checkbox */
-            height: 18px;
-            border-radius: 4px;
-            cursor: pointer;
-            flex-shrink: 0; /* Prevent shrinking */
-        }
-
-        .form-group.checkbox label {
-            margin-bottom: 0; /* Remove default label margin */
+        .form-check-label {
             font-size: 0.95rem;
             color: var(--text-color);
-            cursor: pointer;
+        }
+        .form-check-input {
+            border-color: #ccc; transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .form-check-input:checked {
+            background-color: var(--primary-green); border-color: var(--primary-green);
         }
 
-
-        .register-button {
-            width: 100%;
-            padding: 14px; /* More padding */
-            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
-            border: none;
-            color: white;
-            font-size: 1.15rem; /* Larger font */
-            font-weight: 600;
-            border-radius: 10px; /* Slightly less rounded than 25px */
-            cursor: pointer;
-            margin-top: 20px; /* More margin top */
-            transition: opacity 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; /* Added opacity */
+        .text-center a {
+            color: var(--primary-green); text-decoration: none; font-weight: 500; transition: all 0.3s ease;
+        }
+        .text-center a:hover {
+            text-decoration: underline; color: var(--darker-green); transform: translateX(2px);
         }
 
-        .register-button:hover:not(:disabled) { /* Apply hover only when not disabled */
-            transform: translateY(-2px) scale(1.005); /* Subtle lift and slight grow */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
-            background: linear-gradient(to right, #1a603c, #90e022); /* Slightly brighter gradient on hover */
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .register-button:disabled {
-            background: linear-gradient(to right, #a0a0a0, #c0c0c0); /* Greyed out gradient */
-            cursor: not-allowed;
-            opacity: 0.7;
-            transform: none;
-            box-shadow: none;
-        }
+        .form-group-animated { opacity: 0; animation: fadeIn 0.6s ease-out forwards; }
+        .alert { animation-delay: 0.1s; }
+        h2 { animation-delay: 0.2s; }
+        .form-group-animated:nth-of-type(1) { animation-delay: 0.3s; }
+        .form-group-animated:nth-of-type(2) { animation-delay: 0.4s; }
+        .form-group-animated:nth-of-type(3) { animation-delay: 0.5s; }
+        .form-group-animated:nth-of-type(4) { animation-delay: 0.6s; }
+        .form-group-animated:nth-of-type(5) { animation-delay: 0.7s; }
+        .form-group-animated:nth-of-type(6) { animation-delay: 0.8s; }
+        .form-group-animated:nth-of-type(7) { animation-delay: 0.9s; }
+        .form-group-animated:nth-of-type(8) { animation-delay: 1.0s; }
+        .form-group-animated:nth-of-type(9) { animation-delay: 1.1s; } /* Terms Checkbox */
+        .form-group-animated:nth-of-type(10) { animation-delay: 1.2s; } /* Register Button */
+        .form-group-animated:nth-of-type(11) { animation-delay: 1.3s; } /* Sign In link */
 
-        .social-login {
-            text-align: center;
-            margin-top: 25px; /* More space */
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .social-login p {
-            margin-bottom: 15px;
-        }
-
-        .social-login button {
-            margin: 0 8px; /* Closer buttons */
-            padding: 10px 15px; /* Smaller padding */
-            border: 1px solid #ddd; /* Subtle border */
-            background: var(--social-btn-bg);
-            border-radius: 8px; /* Rounded corners */
-            cursor: pointer;
-            font-size: 1.1rem; /* Slightly smaller icon font */
-            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-        }
-
-        .social-login button:hover {
-            background: var(--social-btn-hover-bg);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .login-link {
-            text-align: center;
-            margin-top: 30px; /* More space */
-            font-size: 1rem; /* Slightly larger text */
-            color: var(--text-color);
-        }
-
-        .login-link a {
-            text-decoration: none;
-            color: var(--primary-green); /* Match main color */
-            font-weight: 600; /* Bolder */
-            transition: color 0.3s ease, text-decoration 0.3s ease;
-        }
-
-        .login-link a:hover {
-            text-decoration: underline;
-            color: var(--darker-green);
-        }
-
-        /* Responsive adjustments */
-        /* Change breakpoint for stacking from 768px to 992px to allow more horizontal space */
-        @media (max-width: 992px) {
-            .register-container {
-                flex-direction: column; /* Stack image and form vertically */
-                min-height: auto; /* Allow content to dictate height */
-            }
-            .register-image {
-                height: 250px; /* Give image a fixed height on smaller screens */
-                flex: none; /* Remove flex sizing */
-                width: 100%; /* Take full width */
-                min-height: auto;
-            }
-            .register-form-container {
-                padding: 30px 20px; /* Adjusted padding for smaller screens */
-                width: 100%; /* Take full width */
-                min-width: auto; /* Allow it to shrink if needed */
-            }
-            .form-box {
-                margin: 0 auto; /* Center form box without vertical margin pushing it out */
-                max-width: 450px; /* Maintain max-width */
-            }
-        }
-
-        /* Adjustments for very small screens (e.g., mobile phones) */
         @media (max-width: 576px) {
-            .register-form-container {
-                padding: 20px 15px; /* Reduce padding further */
+            body { padding: 10px; } /* Less padding on very small screens */
+            .register-container {
+                margin: 15px auto; /* Reduced margin */
+                padding: 25px; /* Reduced padding */
+                max-width: 98%; /* Allow wider on very small screens */
             }
-            .form-box {
-                padding: 20px;
-                box-shadow: none; /* Remove shadow on very small screens for cleaner look */
-                border-radius: 0; /* Make it full width without radius on very small screens */
-            }
-            h2 {
-                font-size: 1.8rem;
-            }
-            .register-button {
-                padding: 12px;
-                font-size: 1rem;
-            }
+            h2 { font-size: 1.6rem; margin-bottom: 25px; }
+            .btn-custom { font-size: 0.95rem; padding: 10px 15px; }
+            .form-group-animated label { left: 30px; }
+            .form-group-animated input { padding-left: 40px; }
         }
     </style>
 </head>
 <body>
-
 <div class="register-container">
-    <div class="register-image"></div>
-    <div class="register-form-container">
-        <div class="form-box">
-            <h2>Create Account</h2>
-            <form th:action="@{/register}" th:object="${registrationRequest}" method="post">
-                <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger" role="alert">
-                    <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
-                </div>
+    <h2 class="text-center">Create Your PlantNest Account</h2>
+    <div th:if="${error}" class="alert alert-danger form-group-animated" role="alert">
+        <span th:text="${error}"></span>
+    </div>
+    <div th:if="${emailError}" class="alert alert-danger form-group-animated" role="alert">
+        <span th:text="${emailError}"></span>
+    </div>
 
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" placeholder="Enter your first name" th:field="*{firstName}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" placeholder="Enter your last name" th:field="*{lastName}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
-                </div>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Choose a username" th:field="*{username}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="Enter your email address" th:field="*{email}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-                </div>
-                <div class="form-group">
-                    <label for="phoneNumber">Phone Number</label>
-                    <input type="tel" id="phoneNumber" placeholder="Enter your phone number" th:field="*{phoneNumber}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
-                </div>
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" id="address" placeholder="Enter your address" th:field="*{address}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Create a password" th:field="*{password}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-                </div>
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" placeholder="Confirm your password" th:field="*{confirmPassword}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
-                </div>
-                <div class="form-group checkbox">
-                    <input type="checkbox" id="terms" required />
-                    <label for="terms">I agree to the <a href="#" style="color:var(--primary-green); text-decoration: underline;">terms and conditions</a></label>
-                </div>
-                <button type="submit" class="register-button" id="registerBtn" disabled>Register</button>
-            </form>
-
-            <div class="social-login">
-                <p>Or register with</p>
-                <button title="Register with Google">G</button>
-                <button title="Register with Facebook">f</button>
-            </div>
-
-            <div class="login-link">
-                Already have an account? <a th:href="@{/login}">Log in</a>
-            </div>
+    <form th:action="@{/register}" th:object="${user}" method="post">
+        <div class="form-group form-group-animated">
+            <input type="text" id="firstName" th:field="*{firstName}" class="form-control" placeholder=" " required aria-label="First Name">
+            <label for="firstName">First Name</label>
+            <i class="fas fa-user input-icon"></i>
         </div>
+        <div class="form-group form-group-animated">
+            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" placeholder=" " required aria-label="Last Name">
+            <label for="lastName">Last Name</label>
+            <i class="fas fa-user input-icon"></i>
+        </div>
+        <div class="form-group form-group-animated">
+            <input type="text" id="username" th:field="*{username}" class="form-control" placeholder=" " required aria-label="Username">
+            <label for="username">Username</label>
+            <i class="fas fa-id-badge input-icon"></i>
+        </div>
+        <div class="form-group form-group-animated">
+            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder=" " required aria-label="Email Address">
+            <label for="email">Email Address</label>
+            <i class="fas fa-envelope input-icon"></i>
+        </div>
+        <div class="form-group form-group-animated">
+            <input type="tel" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" placeholder=" " required aria-label="Phone Number">
+            <label for="phoneNumber">Phone Number</label>
+            <i class="fas fa-phone input-icon"></i>
+        </div>
+        <div class="form-group form-group-animated">
+            <input type="text" id="address" th:field="*{address}" class="form-control" placeholder=" " required aria-label="Address">
+            <label for="address">Address</label>
+            <i class="fas fa-map-marker-alt input-icon"></i>
+        </div>
+        <div class="form-group form-group-animated">
+            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder=" " required aria-label="Password">
+            <label for="password">Password</label>
+            <i class="fas fa-lock input-icon"></i>
+        </div>
+        <div class="form-group form-group-animated">
+            <input type="password" id="confirmPassword" class="form-control" placeholder=" " required aria-label="Confirm Password">
+            <label for="confirmPassword">Confirm Password</label>
+            <i class="fas fa-lock input-icon"></i>
+            <div id="passwordMatchError" class="text-danger mt-1" style="display:none;">Passwords do not match.</div>
+        </div>
+
+        <div class="form-group checkbox">
+            <input type="checkbox" id="terms" required />
+            <label for="terms">I agree to the <a href="#" style="color:var(--primary-green); text-decoration: underline;">terms and conditions</a></label>
+        </div>
+
+        <div class="d-grid mb-4 form-group-animated">
+            <button type="submit" class="btn btn-custom" id="registerButton" disabled>Register</button>
+        </div>
+    </form>
+    <div class="text-center form-group-animated">
+        Already have an account? <a th:href="@{/login}">Sign In</a>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const firstNameInput = document.getElementById("firstName");
-        const lastNameInput = document.getElementById("lastName");
-        const usernameInput = document.getElementById("username");
-        const emailInput = document.getElementById("email");
-        const phoneNumberInput = document.getElementById("phoneNumber");
-        const addressInput = document.getElementById("address");
-        const passwordInput = document.getElementById("password");
-        const confirmPasswordInput = document.getElementById("confirmPassword");
-        const termsCheckbox = document.getElementById("terms");
-        const registerButton = document.getElementById("registerBtn");
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const usernameInput = document.getElementById('username');
+        const emailInput = document.getElementById('email');
+        const phoneNumberInput = document.getElementById('phoneNumber');
+        const addressInput = document.getElementById('address');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const termsCheckbox = document.getElementById('termsCheckbox');
+        const registerButton = document.getElementById('registerButton');
+        const passwordMatchError = document.getElementById('passwordMatchError');
 
         function validateForm() {
             const firstNameValue = firstNameInput.value.trim();
@@ -382,16 +302,27 @@
 
             const passwordsMatch = passwordValue === confirmPasswordValue;
 
+            if (passwordValue !== '' && confirmPasswordValue !== '') {
+                if (!passwordsMatch) {
+                    passwordMatchError.style.display = 'block';
+                } else {
+                    passwordMatchError.style.display = 'none';
+                }
+            } else {
+                passwordMatchError.style.display = 'none';
+            }
+
+
             const isValid = firstNameValue !== '' &&
-                            lastNameValue !== '' &&
-                            usernameValue !== '' &&
-                            emailValue !== '' &&
-                            phoneNumberValue !== '' &&
-                            addressValue !== '' &&
-                            passwordValue !== '' &&
-                            confirmPasswordValue !== '' &&
-                            termsChecked &&
-                            passwordsMatch;
+                lastNameValue !== '' &&
+                usernameValue !== '' &&
+                emailValue !== '' &&
+                phoneNumberValue !== '' &&
+                addressValue !== '' &&
+                passwordValue !== '' &&
+                confirmPasswordValue !== '' &&
+                termsChecked &&
+                passwordsMatch;
 
             registerButton.disabled = !isValid;
         }
@@ -405,6 +336,5 @@
         validateForm(); // Initial validation on page load
     });
 </script>
-
 </body>
 </html>

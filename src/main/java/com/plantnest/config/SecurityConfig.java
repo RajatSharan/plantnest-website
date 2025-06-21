@@ -5,7 +5,6 @@ import com.plantnest.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod; // Make sure this is imported
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,9 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-// import org.springframework.security.web.util.matcher.AntPathRequestMatcher; // You might be able to remove this import now
-
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository; // Make sure this is imported
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -28,46 +25,51 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        // Publicly accessible paths (no authentication required)
                         .requestMatchers(
                                 "/", "/home", "/shop", "/about", "/contact", "/search",
-                                "/register", "/login", "/subscribe",
-                                "/forgot-password", "/reset-password",
-                                "/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico"
+                                "/register", "/login", "/forgot-password", "/subscribe", "/reset-password",
+                                "/css/**", "/js/**", "/images/**",
+                                "/add-to-cart/**",           // AJAX endpoint for adding to cart
+                                "/cart/update-quantity",     // AJAX endpoint for updating cart item quantity
+                                "/cart/remove/**"            // AJAX endpoint for removing cart item
                         ).permitAll()
-                        // Explicitly allow authenticated POST to /add-to-cart to resolve 403 issues reliably
-                        .requestMatchers(HttpMethod.POST, "/add-to-cart/**").authenticated()
-                        .requestMatchers("/dashboard/**", "/profile", "/profile/update", "/cart/**", "/orders/**")
-                        .hasAnyAuthority("USER", "ROLE_USER") // Allow only authenticated users with specific roles/authorities
-                        .anyRequest().authenticated() // All other requests require authentication
+                        // Paths requiring authentication
+                        .requestMatchers(
+                                "/dashboard", "/cart", "/profile", "/place-order", "/my-orders",
+                                "/cart/apply-coupon", // Apply coupon requires authenticated user
+                                "/checkout",          // Checkout requires authenticated user
+                                "/order-confirmation*" // Added this to ensure order confirmation page requires authentication
+                        ).authenticated()
+                        // Any other request not explicitly matched above also requires authentication
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/do-login")
-                        .successHandler(customAuthenticationSuccessHandler())
-                        .failureUrl("/login?error=true")
-                        .permitAll()
+                        .loginProcessingUrl("/do-login") // URL to process the login form submission
+                        .successHandler(customAuthenticationSuccessHandler()) // Custom handler for successful login
+                        .failureUrl("/login?error=true") // Redirect on login failure
+                        .permitAll() // Allow everyone to access the login page and process URL
                 )
                 .logout(logout -> logout
-                        // The 'logoutRequestMatcher' is deprecated for default '/logout' URL.
-                        // Spring Security handles '/logout' by default, so this line is no longer needed.
-                        // .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
+                        .logoutUrl("/logout") // URL to trigger logout
+                        .logoutSuccessUrl("/login?logout=true") // Redirect after successful logout
+                        .invalidateHttpSession(true) // Invalidate the HTTP session
+                        .deleteCookies("JSESSIONID") // Delete session cookies
+                        .permitAll() // Allow everyone to logout
                 )
                 .rememberMe(remember -> remember
-                        .key("uniqueAndSecretKey")
                         .userDetailsService(customUserDetailsService)
-                        .rememberMeParameter("remember-me")
-                        .tokenValiditySeconds(1209600)
+                        .rememberMeParameter("remember-me") // Name of the checkbox parameter
+                        .tokenValiditySeconds(1209600) // 2 weeks validity
                 )
                 .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(false)
+                        .maximumSessions(1) // Allow only one active session per user
+                        .maxSessionsPreventsLogin(false) // Old session expires if new login occurs
                 )
                 .csrf(csrf -> csrf
-                        // Explicitly configure CSRF token repository for better AJAX integration
+                        // Configure CSRF token repository to store token in a cookie accessible by JS
+                        // withHttpOnlyFalse() makes it accessible to JavaScript, useful for AJAX
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 );
 
@@ -90,8 +92,14 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
+            // Retrieve the CustomUserDetails object from the authentication principal
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            request.getSession().setAttribute("user", userDetails.getUser());
+            // Store the actual User entity (from your model) in the HTTP session.
+            // This is crucial because your Thymeleaf templates (e.g., home.html, cart.html)
+            // are designed to access properties like 'firstName' directly from the User object.
+            // CustomUserDetails typically wraps your User entity and provides methods to access it.
+            request.getSession().setAttribute("loggedInUser", userDetails.getUser());
+            // Redirect to the dashboard with a success flag
             response.sendRedirect("/dashboard?loginSuccess=true");
         };
     }

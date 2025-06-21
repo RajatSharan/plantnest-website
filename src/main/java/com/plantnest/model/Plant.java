@@ -1,9 +1,11 @@
+
 package com.plantnest.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -18,8 +20,8 @@ public class Plant implements Serializable {
     @NotBlank(message = "Plant name is required")
     private String name;
 
-    @NotBlank(message = "Image filename is required")
-    @Column(name = "image") 
+
+    @Column(name = "image")
     private String image;
 
     @NotNull(message = "Price is required")
@@ -33,7 +35,6 @@ public class Plant implements Serializable {
 
     public Plant() {}
 
-
     public Plant(String name, String image, BigDecimal price, String imageUrl, String description) {
         this.name = name;
         this.image = image;
@@ -42,6 +43,7 @@ public class Plant implements Serializable {
         this.description = description;
     }
 
+    // Getters and Setters (as provided in your file)
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
