@@ -8,196 +8,552 @@
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Shared CSS variables for consistency */
+        /* Shared CSS variables for consistency - copied from home.html */
         :root {
             --primary-green: #28a745;
             --darker-green: #218838;
             --light-green-bg: #e6f7ea; /* Slightly lighter green background */
             --text-color: #333;
-            --secondary-text-color: #555; /* For less critical text */
-            --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Slightly more pronounced shadow */
-            --border-color: #e0e0e0;
+            --secondary-text-color: #6c757d;
+            --heading-color: #2c3e50; /* Darker, sophisticated blue-grey */
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+            --border-radius: 12px;
+            --transition-speed: 0.4s;
+            --accent-yellow: #ffc107;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
             color: var(--text-color);
-            background-color: var(--light-green-bg); /* Changed background color here */
-            padding-top: 56px;
-            line-height: 1.6; /* Improve readability */
+            background-color: var(--light-green-bg);
+            padding-top: 70px; /* Adjust for fixed navbar */
+            line-height: 1.6;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+            color: var(--heading-color);
+        }
+
+        /* Navbar styles from home.html */
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1rem 0;
+            transition: all var(--transition-speed) ease;
+            position: fixed; /* Make sticky */
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1030;
+        }
+        .navbar.scrolled {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-green) !important;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s ease;
+        }
+        .navbar-brand:hover {
+            transform: scale(1.02);
+        }
+        .navbar-brand .plant-icon {
+            font-size: 1.8rem;
+            color: var(--darker-green);
+        }
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-color) !important;
+            margin: 0 18px;
+            transition: color var(--transition-speed) ease, transform 0.2s ease, border-bottom var(--transition-speed) ease;
+            position: relative;
+            padding-bottom: 5px;
+        }
+        .nav-link:hover {
+            color: var(--primary-green) !important;
+            transform: translateY(-3px);
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: var(--primary-green);
+            transition: width var(--transition-speed) ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .navbar .form-control {
+            border-radius: 50px;
+            border-color: #e0e0e0;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .navbar .form-control:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+        }
+        .navbar .btn-outline-success {
+            border-radius: 50px;
+            color: var(--primary-green);
+            border-color: var(--primary-green);
+            padding: 0.6rem 1.2rem;
+            transition: all var(--transition-speed) ease;
+        }
+        .navbar .btn-outline-success:hover {
+            background-color: var(--primary-green);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .navbar .nav-icons a {
+            color: var(--secondary-text-color);
+            font-size: 1.4rem;
+            margin-left: 25px;
+            transition: color var(--transition-speed) ease, transform 0.2s ease;
+        }
+        .navbar .nav-icons a:hover {
+            color: var(--primary-green);
+            transform: scale(1.1) translateY(-2px);
+        }
+
+        /* Dropdown alignment fix */
+        .navbar .dropdown-menu {
+            right: 0;
+            left: auto; /* Override Bootstrap's default left positioning */
+        }
+        /* End Dropdown alignment fix */
+
+
+        /* Order Specific Styles */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px; /* More space below title */
+            font-size: 3rem; /* Larger page title */
+            color: var(--heading-color);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        .page-title::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-green);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
         }
 
         .order-card {
             background-color: #fff;
-            border-radius: 10px; /* Slightly more rounded corners */
-            box-shadow: var(--card-shadow);
-            margin-bottom: 25px; /* More space between cards */
-            padding: 25px; /* More internal padding */
-            transition: transform 0.2s ease-in-out; /* Smooth hover effect */
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Layered shadow for depth */
+            margin-bottom: 30px; /* More space between cards */
+            padding: 30px; /* More internal padding */
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            border: 1px solid #e0e0e0; /* Subtle border */
         }
 
         .order-card:hover {
-            transform: translateY(-5px); /* Lift card on hover */
+            transform: translateY(-8px); /* Lift card on hover */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Even deeper shadow */
         }
 
         .order-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px; /* More space below header */
-            border-bottom: 1px solid var(--border-color); /* Lighter border */
-            padding-bottom: 15px; /* More padding below header */
+            margin-bottom: 25px; /* More space below header */
+            border-bottom: 1px solid #f0f0f0; /* Lighter border, subtle */
+            padding-bottom: 20px; /* More padding below header */
         }
 
         .order-header h5 {
-            font-weight: 700; /* Bolder for prominence */
+            font-weight: 700;
             color: var(--primary-green);
-            font-size: 1.35em; /* Slightly larger heading */
+            font-size: 1.5em; /* Larger heading */
         }
 
         .order-detail-item {
-            margin-bottom: 10px; /* More space between detail items */
-            font-size: 1em; /* Standard readable font size */
-            color: var(--secondary-text-color); /* Differentiate from strong text */
+            margin-bottom: 12px; /* More space between detail items */
+            font-size: 1.05em; /* Slightly larger font size */
+            color: var(--secondary-text-color);
+            display: flex; /* Flexbox for alignment */
+            align-items: center;
         }
 
         .order-detail-item strong {
             color: var(--text-color);
-            min-width: 120px; /* Align labels for consistency */
+            min-width: 150px; /* Align labels for consistency */
             display: inline-block;
+            font-weight: 600;
+        }
+        .order-detail-item i {
+            margin-right: 8px; /* Space between icon and text */
+            color: var(--primary-green); /* Green icons */
+            font-size: 1.1em;
         }
 
         .empty-orders {
             text-align: center;
-            padding: 60px 20px; /* More padding */
+            padding: 70px 30px; /* More padding */
             background-color: #fff;
-            border-radius: 10px;
+            border-radius: var(--border-radius);
             box-shadow: var(--card-shadow);
             margin-top: 50px;
+            border: 1px solid #e0e0e0;
         }
 
         .empty-orders .lead {
-            font-size: 1.25em;
-            margin-bottom: 15px;
-            color: var(--text-color);
+            font-size: 1.4em; /* Larger lead text */
+            margin-bottom: 20px;
+            color: var(--heading-color);
         }
 
         .empty-orders p {
             color: var(--secondary-text-color);
+            margin-bottom: 25px;
+        }
+        .empty-orders i {
+            color: #ccc; /* Lighter icon for empty state */
+            font-size: 5rem; /* Larger icon */
+            margin-bottom: 30px;
         }
 
         .badge {
-            padding: 0.5em 0.8em;
-            border-radius: 0.25rem;
+            padding: 0.6em 1em; /* More padding */
+            border-radius: 0.5rem; /* More rounded */
             font-weight: 600;
-            font-size: 0.85em;
+            font-size: 0.9em; /* Slightly larger badge text */
+            text-transform: uppercase; /* Uppercase for status */
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease; /* Smooth transition */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .badge-info {
-            background-color: #0d6efd; /* A more distinct blue */
+        .badge-info { /* Default/Processing */
+            background-color: #0d6efd;
             color: white;
         }
+        .badge-info:hover { background-color: #0b5ed7; }
 
-        .badge-success {
+        .badge-success { /* DELIVERED */
             background-color: var(--primary-green);
             color: white;
         }
+        .badge-success:hover { background-color: var(--darker-green); }
 
-        /* Add more badge styles as needed, e.g., for PENDING, CANCELED */
-        .badge-warning { /* Example for PENDING */
+        .badge-warning { /* PENDING */
             background-color: #ffc107;
             color: #333;
         }
-        .badge-danger { /* Example for CANCELLED */
+        .badge-warning:hover { background-color: #e0a800; }
+
+        .badge-danger { /* CANCELLED */
             background-color: #dc3545;
             color: white;
         }
+        .badge-danger:hover { background-color: #bb2d3b; }
 
         .list-group-item {
-            border-color: #f0f0f0; /* Lighter border for list items */
-            padding: 12px 15px; /* More padding for list items */
-            font-size: 0.95em;
+            border-color: #f8f8f8; /* Very light border for list items */
+            padding: 15px 20px; /* More padding for list items */
+            font-size: 1em;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .list-group-item:nth-child(odd) { /* Subtle zebra striping */
+            background-color: #fdfdfd;
+        }
+        .list-group-item:hover {
+            background-color: #f5f5f5; /* Subtle hover effect */
         }
 
         .list-group-item span:last-child {
-            font-weight: 600; /* Bold price */
-            color: var(--primary-green); /* Highlight price */
+            font-weight: 700;
+            color: var(--primary-green);
+            font-size: 1.05em;
         }
 
         .btn-primary {
             background-color: var(--primary-green);
             border-color: var(--primary-green);
-            padding: 10px 25px;
-            font-size: 1.1em;
+            padding: 12px 30px; /* More padding */
+            font-size: 1.15em; /* Larger font */
             font-weight: 600;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            border-radius: 50px; /* Pill shape */
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .btn-primary:hover {
             background-color: var(--darker-green);
             border-color: var(--darker-green);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Footer styles from home.html */
+        .footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 60px 0;
+            font-size: 1rem;
+            text-align: left;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            margin-top: 50px; /* Space from content */
+        }
+        .footer h5 {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+        }
+        .footer .list-unstyled a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color var(--transition-speed) ease, transform 0.2s ease;
+            display: block;
+            padding: 6px 0;
+        }
+        .footer .list-unstyled a:hover {
+            color: var(--primary-green);
+            transform: translateX(5px);
+        }
+        .footer .social-icons a {
+            color: #ecf0f1;
+            font-size: 1.8rem;
+            margin-right: 20px;
+            transition: all var(--transition-speed) ease;
+            display: inline-flex;
+            width: 45px;
+            height: 45px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .footer .social-icons a:hover {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+            transform: translateY(-5px) scale(1.1);
+            color: #fff;
+        }
+        .footer .footer-bottom {
+            border-top: 1px solid #4a6272;
+            padding-top: 30px;
+            margin-top: 40px;
+            text-align: center;
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 991.98px) {
+            .navbar-collapse { margin-top: 15px; text-align: center; }
+            .navbar .d-flex { justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+            .navbar .form-control, .navbar .btn-outline-success { margin-top: 10px; }
+            .page-title { font-size: 2.5rem; margin-bottom: 40px; }
+            .order-card { padding: 20px; margin-bottom: 20px; }
+            .order-header h5 { font-size: 1.3em; }
+            .order-detail-item strong { min-width: 120px; }
+            .empty-orders { padding: 40px 15px; margin-top: 30px; }
+            .empty-orders .lead { font-size: 1.2em; }
+            .empty-orders i { font-size: 4rem; margin-bottom: 20px; }
+            .btn-primary { padding: 10px 25px; font-size: 1em; }
+        }
+        @media (max-width: 767.98px) {
+            .navbar .nav-icons a { margin-left: 15px; }
+            .page-title { font-size: 2rem; }
+            .footer .row > div { margin-bottom: 30px; text-align: center; }
+            .footer .social-icons { justify-content: center; display: flex; }
         }
     </style>
 </head>
 <body>
-    <div th:replace="~{fragments/header :: header(user=${user}, cartCount=${cartCount}, query=${query})}"></div>
-
-    <div class="container mt-4">
-        <h2 class="mb-4 text-center">My Orders</h2>
-
-        <div th:if="${#lists.isEmpty(orders)}" class="empty-orders">
-            <p class="lead">You haven't placed any orders yet.</p>
-            <p>Start shopping now!</p>
-            <a th:href="@{/dashboard}" class="btn btn-primary">Go to Dashboard</a>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fa-solid fa-seedling plant-icon"></i> PlantNest
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                <!-- CurrentURI is passed by the controller for active link highlighting -->
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${currentUri == '/' or currentUri == '/home' ? 'active' : ''}" aria-current="page" th:href="@{/}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${currentUri == '/shop' ? 'active' : ''}" th:href="@{/shop}">Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${currentUri == '/about' ? 'active' : ''}" th:href="@{/about}">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${currentUri == '/contact' ? 'active' : ''}" th:href="@{/contact}">Contact</a>
+                </li>
+            </ul>
         </div>
-
-        <div th:unless="${#lists.isEmpty(orders)}">
-            <div th:each="order : ${orders}" class="order-card">
-                <div class="order-header">
-                    <h5 th:text="'Order ID: ' + ${order.id}">Order ID: #12345</h5>
-                    <span th:classappend="'badge ' + (${order.status} == 'DELIVERED' ? 'badge-success' : 'badge-info')"
-                          th:text="${order.status}">Status</span>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p class="order-detail-item">
-                            <strong>Order Date:</strong>
-                            <span th:text="${#temporals.format(order.createdAt, 'dd-MMM-yyyy HH:mm')}">Date</span>
-                        </p>
-                        <p class="order-detail-item">
-                            <strong>Total Amount:</strong>
-                            <span th:text="'₹' + ${#numbers.formatDecimal(order.total, 0, 'COMMA', 2, 'POINT')}">₹0.00</span>
-                        </p>
-                    </div>
-                    <div class="col-md-6">
-                        <p class="order-detail-item">
-                            <strong>Payment Method:</strong>
-                            <span th:text="${order.paymentMethod}">Card</span>
-                        </p>
-                        <p class="order-detail-item">
-                            <strong>Shipping Address:</strong>
-                            <span th:text="${order.shippingAddress}">Address</span>
-                        </p>
-                    </div>
-                </div>
-
-                <h6 class="mt-3">Items:</h6>
-                <ul class="list-group list-group-flush">
-                    <li th:each="item : ${order.orderItems}" class="list-group-item d-flex justify-content-between align-items-center">
-                        <span th:text="${item.quantity} + ' x ' + ${item.plant.name}">2 x Rose Plant</span>
-                        <span th:text="'₹' + ${#numbers.formatDecimal(item.plant.price * item.quantity, 0, 'COMMA', 2, 'POINT')}">₹500.00</span>
-                    </li>
+        <div class="d-flex align-items-center nav-icons">
+            <form th:action="@{/search}" method="get" class="d-flex me-3">
+                <input type="text" name="query" class="form-control" placeholder="Search..." aria-label="Search" />
+                <button class="btn btn-outline-success ms-2" type="submit"><i class="fas fa-search"></i></button>
+            </form>
+            <a th:href="@{/cart}" class="text-decoration-none me-3" aria-label="Shopping Cart"><i class="fas fa-shopping-cart"></i></a>
+            <!-- Using th:if and th:unless for user login status -->
+            <div th:if="${session.loggedInUser != null}" class="dropdown">
+                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <!-- Accessing firstName directly from the User object stored in session -->
+                    <i class="fas fa-user-circle ms-3 me-1"></i> <span th:text="${session.loggedInUser.firstName}">User</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item" th:href="@{/profile}">My Profile</a></li>
+                    <li><a class="dropdown-item" th:classappend="${currentUri == '/my-orders' ? 'active' : ''}" th:href="@{/my-orders}">My Orders</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
                 </ul>
+            </div>
+            <div th:unless="${session.loggedInUser != null}">
+                <a th:href="@{/login}" class="btn btn-outline-success ms-3">Sign In</a>
             </div>
         </div>
     </div>
+</nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9f..." crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<div class="container mt-5 py-3">
+    <h2 class="page-title mb-4">My Orders</h2>
+
+    <div th:if="${#lists.isEmpty(orders)}" class="empty-orders">
+        <i class="fas fa-box-open fa-3x mb-3"></i>
+        <p class="lead">You haven't placed any orders yet.</p>
+        <p>Start your green journey today!</p>
+        <a th:href="@{/dashboard}" class="btn btn-primary mt-3"><i class="fas fa-leaf me-2"></i> Go to Dashboard</a>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(orders)}">
+        <div th:each="order : ${orders}" class="order-card">
+            <div class="order-header">
+                <h5 th:text="'Order ID: #' + ${order.id}">Order ID: #12345</h5>
+                <span th:classappend="'badge ' + (${order.status} == 'DELIVERED' ? 'badge-success' : (${order.status} == 'PENDING' ? 'badge-warning' : 'badge-info'))"
+                      th:text="${order.status}">Status</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="order-detail-item">
+                        <i class="fas fa-calendar-alt"></i> <strong>Order Date:</strong>
+                        <span th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd MMM儼, HH:mm') : 'N/A'}">Date</span>
+                    </p>
+                    <p class="order-detail-item">
+                        <i class="fas fa-rupee-sign"></i> <strong>Total Amount:</strong>
+                        <span th:text="'₹' + (${order.total != null ? #numbers.formatDecimal(order.total, 0, 'COMMA', 2, 'POINT') : '0.00'})">₹0.00</span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="order-detail-item">
+                        <i class="fas fa-credit-card"></i> <strong>Payment Method:</strong>
+                        <span th:text="${order.paymentMethod != null ? order.paymentMethod : 'N/A'}">Card</span>
+                    </p>
+                    <p class="order-detail-item">
+                        <i class="fas fa-map-marker-alt"></i> <strong>Shipping Address:</strong>
+                        <span th:text="${order.shippingAddress != null ? order.shippingAddress : 'N/A'}">Address</span>
+                    </p>
+                </div>
+            </div>
+
+            <h6 class="mt-4 mb-3" style="color: var(--heading-color); font-weight: 600;">Order Items:</h6>
+            <ul class="list-group list-group-flush">
+                <li th:each="item : ${order.orderItems}" class="list-group-item">
+                    <span>
+                        <strong th:text="${item.quantity != null ? item.quantity : '0'}">2</strong> x
+                        <span th:text="${item.plant != null ? item.plant.name : 'Unknown Plant'}">Rose Plant</span>
+                    </span>
+                    <span>
+                        ₹<span th:text="${item.plant != null and item.plant.price != null and item.quantity != null ? #numbers.formatDecimal(item.plant.price * item.quantity, 0, 'COMMA', 2, 'POINT') : '0.00'}">500.00</span>
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5>PlantNest</h5>
+                <p>Your sanctuary for exquisite plants and garden essentials. We bring nature to your doorstep.</p>
+                <div class="social-icons mt-3">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-md-2 mb-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a th:href="@{/}">Home</a></li>
+                    <li><a th:href="@{/about}">About Us</a></li>
+                    <li><a th:href="@{/contact}">Contact</a></li>
+                    <li><a th:href="@{/faq}">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h5>Shop By Category</h5>
+                <ul class="list-unstyled">
+                    <li><a th:href="@{/shop(category='indoor')}">Indoor Plants</a></li>
+                    <li><a th:href="@{/shop(category='outdoor')}">Outdoor Plants</a></li>
+                    <li><a th:href="@{/shop(category='flowering')}">Flowering Plants</a></li>
+                    <li><a th:href="@{/shop(category='succulents')}">Succulents & Cacti</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h5>Contact Us</h5>
+                <p><i class="fas fa-map-marker-alt me-2"></i>123 Green Avenue,<br>Jaipur, India</p>
+                <p><i class="fas fa-envelope me-2"></i>Email: info@plantnest.com</p>
+                <p><i class="fas fa-phone-alt me-2"></i>Phone: +91 99999999999</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="currentYear"></span> PlantNest. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Navbar shadow on scroll (copied from home.html)
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    });
+</script>
 </body>
 </html>

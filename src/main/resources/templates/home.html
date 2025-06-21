@@ -17,15 +17,16 @@
             --text-color: #333;
             --secondary-text-color: #6c757d;
             --heading-color: #2c3e50; /* Darker, sophisticated blue-grey */
-            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Deeper default shadow */
+            --hover-shadow: 0 12px 35px rgba(0, 0, 0, 0.18); /* Even deeper hover shadow */
             --border-radius: 12px;
-            --transition-speed: 0.3s;
+            --transition-speed: 0.4s; /* Slightly slower for more noticeable animations */
+            --accent-yellow: #ffc107; /* A complementary accent color */
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
+            line-height: 1.8; /* Increased line height for readability */
             color: var(--text-color);
             background-color: #f8f9fa;
         }
@@ -34,108 +35,162 @@
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Playfair Display', serif;
             color: var(--heading-color);
+            line-height: 1.3;
         }
-        h1 { font-size: 3.5rem; font-weight: 700; }
-        h2 { font-size: 2.8rem; font-weight: 700; }
+        h1 { font-size: 4.8rem; font-weight: 700; text-shadow: 2px 2px 5px rgba(0,0,0,0.3); } /* Larger, more impactful */
+        h2 { font-size: 3.2rem; font-weight: 700; }
 
         /* Navbar */
         .navbar {
             background-color: #fff;
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             padding: 1rem 0;
             transition: all var(--transition-speed) ease;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1030;
+        }
+        .navbar.scrolled {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); /* More prominent shadow on scroll */
         }
         .navbar-brand {
             font-weight: 700;
             color: var(--primary-green) !important;
-            font-size: 2rem;
+            font-size: 2.2rem; /* Slightly larger brand */
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            transition: transform 0.2s ease;
+        }
+        .navbar-brand:hover {
+            transform: scale(1.02);
         }
         .navbar-brand .plant-icon {
-            font-size: 1.5rem;
+            font-size: 1.8rem; /* Larger icon */
             color: var(--darker-green);
         }
         .nav-link {
             font-weight: 500;
             color: var(--text-color) !important;
-            margin: 0 15px;
-            transition: color var(--transition-speed) ease, transform 0.2s ease;
+            margin: 0 18px; /* More spacing */
+            transition: color var(--transition-speed) ease, transform 0.2s ease, border-bottom var(--transition-speed) ease;
+            position: relative;
+            padding-bottom: 5px; /* Space for underline */
         }
         .nav-link:hover {
             color: var(--primary-green) !important;
-            transform: translateY(-2px);
+            transform: translateY(-3px); /* More pronounced lift */
         }
-        .nav-link.active {
-            color: var(--primary-green) !important;
-            border-bottom: 2px solid var(--primary-green);
+        .nav-link::after { /* Animated underline */
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: var(--primary-green);
+            transition: width var(--transition-speed) ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
         }
         .navbar .form-control {
             border-radius: 50px;
-            border-color: #ced4da;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+            border-color: #e0e0e0; /* Lighter border */
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .navbar .form-control:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
         }
         .navbar .btn-outline-success {
             border-radius: 50px;
             color: var(--primary-green);
             border-color: var(--primary-green);
+            padding: 0.6rem 1.2rem;
             transition: all var(--transition-speed) ease;
         }
         .navbar .btn-outline-success:hover {
             background-color: var(--primary-green);
             color: #fff;
+            transform: translateY(-2px);
         }
         .navbar .nav-icons a {
             color: var(--secondary-text-color);
-            font-size: 1.2rem;
-            margin-left: 20px;
+            font-size: 1.4rem; /* Larger icons */
+            margin-left: 25px;
             transition: color var(--transition-speed) ease, transform 0.2s ease;
         }
         .navbar .nav-icons a:hover {
             color: var(--primary-green);
-            transform: translateY(-2px);
+            transform: scale(1.1) translateY(-2px); /* Pop and lift */
         }
 
         /* Hero Section */
         .hero-section {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('/images/plants-background.jpg') center/cover no-repeat;
-            min-height: 85vh; /* More impactful height */
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('/images/plants-background.jpg') center/cover no-repeat fixed; /* Fixed background for parallax feel */
+            min-height: 90vh; /* Taller hero */
             display: flex;
             align-items: center;
             justify-content: center;
             color: #fff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            text-shadow: 0 3px 6px rgba(0,0,0,0.6); /* More pronounced shadow for text */
+            position: relative;
+            overflow: hidden; /* For potential floating elements */
         }
         .hero-section h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 4.5rem; /* Larger and more grand */
+            font-size: 5rem; /* Even larger and more grand */
             font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 25px;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            animation: fadeInScale 1.5s ease-out forwards; /* Initial animation */
+            opacity: 0;
+            transform: scale(0.95);
         }
         .hero-section p {
-            font-size: 1.5rem;
-            max-width: 800px;
-            margin: 0 auto 40px auto;
+            font-size: 1.8rem; /* Larger lead text */
+            max-width: 900px;
+            margin: 0 auto 50px auto;
+            animation: fadeInScale 1.8s ease-out 0.3s forwards; /* Delayed animation */
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        @keyframes fadeInScale {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         .btn-hero {
             background-color: var(--primary-green);
             color: #fff;
-            padding: 15px 40px;
+            padding: 18px 45px; /* More padding */
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: 1.3rem; /* Larger font */
             font-weight: 600;
             text-decoration: none;
             transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3); /* Stronger initial shadow */
+            animation: fadeInZoom 1.5s ease-out 0.6s forwards; /* Delayed zoom animation */
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        @keyframes fadeInZoom {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         .btn-hero:hover {
             background-color: var(--darker-green);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            color: #fff; /* Ensure text color remains white on hover */
+            transform: translateY(-7px) scale(1.05); /* More pronounced lift and slight scale */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4); /* Even stronger shadow */
+            color: #fff;
         }
 
         /* Section Titles */
@@ -143,20 +198,21 @@
             font-family: 'Playfair Display', serif;
             color: var(--heading-color);
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 70px; /* More space */
             position: relative;
-            padding-bottom: 15px;
+            padding-bottom: 20px; /* Space for line */
+            font-size: 3.5rem; /* Larger section titles */
         }
         .section-title::after {
             content: '';
-            width: 100px;
-            height: 4px;
+            width: 120px; /* Longer line */
+            height: 5px; /* Thicker line */
             background-color: var(--primary-green);
             position: absolute;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            border-radius: 2px;
+            border-radius: 3px;
         }
 
         /* Product Card */
@@ -164,46 +220,47 @@
             background-color: #fff;
             border-radius: var(--border-radius);
             box-shadow: var(--card-shadow);
-            padding: 25px;
+            padding: 28px; /* More padding */
             text-align: center;
             transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            overflow: hidden; /* For image border-radius */
+            overflow: hidden;
+            position: relative; /* For quick view overlay */
         }
         .product-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-10px) scale(1.02); /* Lift and slight scale on hover */
             box-shadow: var(--hover-shadow);
         }
         .product-card img {
             max-width: 100%;
-            height: 220px; /* Increased height for better visibility */
-            object-fit: cover; /* Crop to fill, maintain aspect ratio */
-            margin-bottom: 20px;
-            border-radius: var(--border-radius); /* Apply radius to image */
+            height: 250px; /* Increased height for better visibility */
+            object-fit: cover;
+            margin-bottom: 25px;
+            border-radius: var(--border-radius);
             transition: transform 0.5s ease;
         }
         .product-card:hover img {
-            transform: scale(1.05); /* Slight zoom on hover */
+            transform: scale(1.08); /* More pronounced zoom on hover */
         }
         .product-card h5 {
             font-family: 'Poppins', sans-serif;
-            font-size: 1.4rem;
+            font-size: 1.5rem; /* Slightly larger product title */
             font-weight: 600;
             color: var(--text-color);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .product-card p.price {
-            font-size: 1.25rem;
+            font-size: 1.4rem; /* Larger price */
             font-weight: 700;
             color: var(--darker-green);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .product-card .btn {
             width: 100%;
-            padding: 12px 0;
+            padding: 14px 0; /* More padding */
             font-weight: 600;
             border-radius: 50px;
             transition: all var(--transition-speed) ease;
@@ -215,167 +272,248 @@
         .product-card .btn-success:hover {
             background-color: var(--darker-green);
             border-color: var(--darker-green);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         /* How It Works Section */
         .how-it-works .col-md-4 {
-            padding: 30px;
+            padding: 35px; /* More padding */
             background-color: #fff;
             border-radius: var(--border-radius);
             box-shadow: var(--card-shadow);
-            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
-            margin-bottom: 20px; /* Space between cards on smaller screens */
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, background-color var(--transition-speed) ease;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0); /* Subtle gradient */
         }
         .how-it-works .col-md-4:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px); /* More pronounced lift */
             box-shadow: var(--hover-shadow);
+            background: linear-gradient(145deg, #e6ffe6, #d4ffda); /* Lighter green on hover */
+        }
+        .how-it-works .col-md-4::before { /* Decorative element */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: var(--primary-green);
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
         }
         .how-it-works .fa-2x {
-            font-size: 3rem; /* Larger icons */
+            font-size: 3.5rem; /* Even larger icons */
             color: var(--primary-green);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        .how-it-works .col-md-4:hover .fa-2x {
+            transform: rotateY(180deg); /* Flip icon on hover */
         }
         .how-it-works h5 {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 600;
             color: var(--heading-color);
         }
         .how-it-works p {
             color: var(--secondary-text-color);
+            line-height: 1.7;
         }
-
 
         /* Testimonials */
         .testimonial-card {
             background-color: #fff;
             border-radius: var(--border-radius);
             box-shadow: var(--card-shadow);
-            padding: 30px;
+            padding: 35px; /* More padding */
             margin-bottom: 30px;
             text-align: center;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--hover-shadow);
         }
         .testimonial-card p {
             font-style: italic;
-            font-size: 1.1rem;
+            font-size: 1.15rem; /* Slightly larger quote */
             color: var(--text-color);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            z-index: 1; /* Ensure text is above pseudo-element */
         }
         .testimonial-card .blockquote-footer {
-            font-size: 0.95rem;
+            font-size: 1rem; /* Slightly larger footer text */
             color: var(--secondary-text-color);
-            margin-top: auto; /* Push footer to bottom */
+            margin-top: auto;
+            position: relative;
+            z-index: 1;
         }
         .testimonial-card .fa-quote-left {
             color: var(--primary-green);
-            font-size: 2rem;
-            margin-bottom: 15px;
+            font-size: 2.5rem; /* Larger quote icon */
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .testimonial-card::before { /* Large, faded background quote */
+            content: "\f10d"; /* Font Awesome quote icon */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12rem; /* Much larger */
+            color: rgba(40, 167, 69, 0.05); /* Very faint green */
+            z-index: 0;
         }
 
         /* Newsletter */
         .newsletter-section {
-            background-color: var(--primary-green); /* Solid green background */
-            background-image: linear-gradient(135deg, var(--primary-green) 0%, var(--darker-green) 100%);
-            padding: 70px 0;
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--darker-green) 100%);
+            padding: 80px 0; /* More padding */
             color: #fff;
             text-align: center;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1); /* Shadow for separation */
+            box-shadow: 0 -8px 20px rgba(0,0,0,0.15); /* Stronger shadow */
+            position: relative;
+            overflow: hidden;
+        }
+        .newsletter-section::before { /* Subtle background pattern */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIwLjUiIGZpbGw9IiNGRkZGRkYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+');
+            background-size: 40px 40px;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        .newsletter-section * { /* Ensure content is above pattern */
+            position: relative;
+            z-index: 1;
         }
         .newsletter-section h4 {
             font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
+            font-size: 3rem; /* Larger heading */
             font-weight: 700;
-            margin-bottom: 25px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-shadow: 0 3px 8px rgba(0,0,0,0.4);
         }
         .newsletter-section p {
-            font-size: 1.1rem;
-            margin-bottom: 35px;
+            font-size: 1.2rem; /* Larger text */
+            margin-bottom: 40px;
         }
         .newsletter-form .form-control {
             border-radius: 50px;
-            padding: 12px 25px;
+            padding: 15px 30px; /* More padding */
             border: none;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-            max-width: 400px;
-            margin: 0 auto; /* Center the input */
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 450px; /* Wider input */
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        .newsletter-form .form-control:focus {
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2), 0 0 0 4px rgba(255,255,255,0.3); /* White glowing focus */
         }
         .newsletter-form .btn-light {
             border-radius: 50px;
-            padding: 12px 35px;
+            padding: 15px 40px; /* More padding */
             font-weight: 600;
             color: var(--primary-green);
-            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform 0.2s ease, box-shadow 0.2s ease;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         .newsletter-form .btn-light:hover {
-            background-color: #e2e6ea;
+            background-color: #f0f0f0;
             color: var(--darker-green);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
         }
 
         /* Footer */
         .footer {
-            background-color: #2c3e50; /* Dark blue-grey */
+            background-color: #2c3e50;
             color: #ecf0f1;
-            padding: 50px 0;
-            font-size: 0.95rem;
-            text-align: left; /* Align text within columns */
+            padding: 60px 0; /* More padding */
+            font-size: 1rem; /* Slightly larger font */
+            text-align: left;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2); /* Shadow for elevation */
         }
         .footer h5 {
             color: #fff;
             font-weight: 600;
-            margin-bottom: 25px;
+            margin-bottom: 30px; /* More space */
             font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
         }
         .footer .list-unstyled a {
             color: #bdc3c7;
             text-decoration: none;
-            transition: color var(--transition-speed) ease;
-            display: block; /* Make links block for spacing */
-            padding: 5px 0;
+            transition: color var(--transition-speed) ease, transform 0.2s ease;
+            display: block;
+            padding: 6px 0; /* More spacing */
         }
         .footer .list-unstyled a:hover {
             color: var(--primary-green);
+            transform: translateX(5px); /* Slide on hover */
         }
         .footer .social-icons a {
             color: #ecf0f1;
-            font-size: 1.6rem;
-            margin-right: 18px;
-            transition: color var(--transition-speed) ease, transform 0.2s ease;
+            font-size: 1.8rem; /* Larger social icons */
+            margin-right: 20px; /* More spacing */
+            transition: all var(--transition-speed) ease;
+            display: inline-flex; /* For better padding */
+            width: 45px;
+            height: 45px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.3);
         }
         .footer .social-icons a:hover {
-            color: var(--primary-green);
-            transform: translateY(-3px);
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+            transform: translateY(-5px) scale(1.1); /* Lift and scale */
+            color: #fff;
         }
         .footer .footer-bottom {
             border-top: 1px solid #4a6272;
-            padding-top: 25px;
-            margin-top: 30px;
-            text-align: center; /* Center the copyright */
+            padding-top: 30px;
+            margin-top: 40px;
+            text-align: center;
             color: #bdc3c7;
+            font-size: 0.9rem;
         }
 
         /* Animations */
         .fade-in-section {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translateY(40px); /* More pronounced initial position */
+            transition: opacity 1s ease-out, transform 1s ease-out; /* Slower transition */
         }
         .fade-in-section.is-visible {
             opacity: 1;
             transform: translateY(0);
         }
-        .animate-up {
-            transition: transform 0.3s ease;
-        }
-        .animate-up:hover {
-            transform: translateY(-5px);
-        }
 
-        /* Small adjustments for responsiveness */
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .hero-section h1 { font-size: 4rem; }
+            .hero-section p { font-size: 1.5rem; }
+            .section-title { font-size: 3rem; }
+        }
         @media (max-width: 991.98px) {
             .navbar-collapse {
                 margin-top: 15px;
@@ -384,29 +522,50 @@
             .navbar .d-flex {
                 justify-content: center;
                 margin-top: 15px;
+                flex-wrap: wrap; /* Allow search and icons to wrap */
+            }
+            .navbar .form-control, .navbar .btn-outline-success {
+                margin-top: 10px; /* Space out search components */
             }
             .hero-section h1 {
-                font-size: 3rem;
+                font-size: 3.5rem;
             }
             .hero-section p {
                 font-size: 1.2rem;
             }
             .section-title {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
             .product-card img {
-                height: 180px;
+                height: 200px;
             }
             .newsletter-form .form-control {
                 margin-bottom: 15px;
+                max-width: 100%;
             }
         }
         @media (max-width: 767.98px) {
             .hero-section h1 {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
             }
             .hero-section p {
                 font-size: 1rem;
+            }
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 50px;
+            }
+            .product-card {
+                padding: 20px;
+            }
+            .product-card h5 {
+                font-size: 1.2rem;
+            }
+            .product-card p.price {
+                font-size: 1.1rem;
+            }
+            .how-it-works .col-md-4, .testimonial-card {
+                margin-bottom: 25px;
             }
             .footer .row > div {
                 margin-bottom: 30px;
@@ -416,8 +575,8 @@
                 justify-content: center;
                 display: flex;
             }
-            .section-title {
-                margin-bottom: 40px;
+            .newsletter-section h4 {
+                font-size: 2rem;
             }
         }
     </style>
@@ -428,7 +587,7 @@
     <strong th:text="${logoutMsg}"></strong>
 </div>
 
-<nav class="navbar navbar-expand-lg sticky-top">
+<nav class="navbar navbar-expand-lg">
     <div class="container">
         <a class="navbar-brand" th:href="@{/}">
             <i class="fa-solid fa-seedling plant-icon"></i> PlantNest
@@ -450,10 +609,10 @@
         <div class="d-flex align-items-center nav-icons">
             <form th:action="@{/search}" method="get" class="d-flex me-3">
                 <input type="text" name="query" class="form-control" placeholder="Search..." />
-                <button class="btn btn-outline-success ms-2"><i class="fas fa-search"></i></button>
+                <button class="btn btn-outline-success ms-2" type="submit"><i class="fas fa-search"></i></button>
             </form>
-            <a th:href="@{/cart}" class="text-decoration-none me-3"><i class="fas fa-shopping-cart"></i></a>
-            <a th:href="@{/login}" class="text-decoration-none"><i class="fas fa-user"></i></a>
+            <a th:href="@{/cart}" class="text-decoration-none me-3" aria-label="Shopping Cart"><i class="fas fa-shopping-cart"></i></a>
+            <a th:href="@{/login}" class="text-decoration-none" aria-label="User Account"><i class="fas fa-user"></i></a>
         </div>
     </div>
 </nav>
@@ -466,49 +625,50 @@
     </div>
 </section>
 
-<section class="container my-5 py-4 fade-in-section">
+<section class="container my-5 py-5 fade-in-section">
     <h2 class="section-title mb-5">Featured Plants</h2>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
         <div class="col" th:each="plant : ${featuredPlants}">
             <div class="product-card">
-                <img th:src="@{/images/{img}(img=${plant.image})}" class="card-img-top" th:alt="${plant.name}" />
+                <img th:src="@{${plant.imageUrl}}" class="card-img-top" th:alt="${plant.name}" />
                 <div class="card-body">
                     <h5 class="card-title" th:text="${plant.name}">Plant Name</h5>
                     <p class="price">Rs. <span th:text="${plant.price}">Price</span>/-</p>
                     <form th:action="@{/cart/add}" method="post" class="mt-auto">
                         <input type="hidden" name="plantId" th:value="${plant.id}" />
-                        <button type="submit" class="btn btn-success">Add to Cart</button>
+                        <button type="submit" class="btn btn-success">Add to Cart <i class="fas fa-plus-circle ms-1"></i></button>
                     </form>
                 </div>
             </div>
         </div>
-        <div th:if="${featuredPlants.isEmpty()}" class="col-12 text-center text-muted">
+        <div th:if="${featuredPlants.isEmpty()}" class="col-12 text-center text-muted py-5">
+            <p><i class="fas fa-leaf fa-3x mb-3 text-success"></i></p>
             <p>No featured plants available at the moment. Check back soon!</p>
         </div>
     </div>
     <div class="text-center mt-5">
-        <a th:href="@{/shop}" class="btn btn-hero">Explore All Plants</a>
+        <a th:href="@{/shop}" class="btn btn-hero">Explore All Plants <i class="fas fa-arrow-right ms-2"></i></a>
     </div>
 </section>
 
 <section class="bg-light py-5 fade-in-section how-it-works">
-    <div class="container text-center">
+    <div class="container text-center py-4">
         <h2 class="section-title mb-5">How It Works</h2>
         <div class="row g-4 justify-content-center">
             <div class="col-md-4 col-lg-3">
                 <i class="fas fa-seedling"></i>
                 <h5 class="mt-3">1. Select Your Plants</h5>
-                <p>Browse our curated collection of indoor and outdoor plants.</p>
+                <p>Browse our curated collection of indoor and outdoor plants, perfect for any space.</p>
             </div>
             <div class="col-md-4 col-lg-3">
                 <i class="fas fa-shopping-basket"></i>
                 <h5 class="mt-3">2. Easy Checkout</h5>
-                <p>Add to cart and complete your order with secure payment.</p>
+                <p>Add your selections to cart and complete your order with our secure and simple checkout process.</p>
             </div>
             <div class="col-md-4 col-lg-3">
                 <i class="fas fa-box-open"></i>
                 <h5 class="mt-3">3. Doorstep Delivery</h5>
-                <p>Receive your healthy plants, carefully packed and delivered.</p>
+                <p>Receive your healthy plants, carefully packed and delivered right to your door.</p>
             </div>
         </div>
     </div>
@@ -520,22 +680,22 @@
         <div class="col">
             <div class="testimonial-card">
                 <i class="fas fa-quote-left"></i>
-                <p>"PlantNest transformed my living space! The plants are vibrant and the delivery was incredibly smooth. Highly recommend!"</p>
-                <footer class="blockquote-footer">Ritu Sharma</footer>
+                <p>"PlantNest transformed my living space! The plants are vibrant and the delivery was incredibly smooth. Highly recommend their sustainable approach!"</p>
+                <footer class="blockquote-footer">Ritu Sharma, <cite title="Source Title">Home Decorator</cite></footer>
             </div>
         </div>
         <div class="col">
             <div class="testimonial-card">
                 <i class="fas fa-quote-left"></i>
-                <p>"Fantastic selection and top-notch customer service. My order arrived perfectly packaged. PlantNest is my go-to for greenery."</p>
-                <footer class="blockquote-footer">Arjun Singh</footer>
+                <p>"Fantastic selection and top-notch customer service. My order arrived perfectly packaged. PlantNest is my new go-to for all my greenery needs."</p>
+                <footer class="blockquote-footer">Arjun Singh, <cite title="Source Title">Garden Enthusiast</cite></footer>
             </div>
         </div>
         <div class="col">
             <div class="testimonial-card">
                 <i class="fas fa-quote-left"></i>
-                <p>"I'm so impressed with the quality and care of the plants from PlantNest. They instantly brightened up my home. Excellent experience!"</p>
-                <footer class="blockquote-footer">Priya Patel</footer>
+                <p>"I'm so impressed with the quality and care of the plants from PlantNest. They instantly brightened up my home. Excellent experience from start to finish!"</p>
+                <footer class="blockquote-footer">Priya Patel, <cite title="Source Title">Urban Gardener</cite></footer>
             </div>
         </div>
     </div>
@@ -544,13 +704,13 @@
 <section class="newsletter-section py-5">
     <div class="container text-center">
         <h4 class="mb-3">Join Our Green Community!</h4>
-        <p>Subscribe to our newsletter for exclusive offers, new plant arrivals, and gardening tips!</p>
+        <p>Subscribe to our newsletter for exclusive offers, new plant arrivals, and expert gardening tips!</p>
         <form th:action="@{/subscribe}" method="post" class="row justify-content-center g-3 newsletter-form">
             <div class="col-md-6 col-lg-4">
-                <input type="email" name="email" class="form-control" placeholder="Enter your email address" required />
+                <input type="email" name="email" class="form-control" placeholder="Enter your email address" required aria-label="Email address for newsletter" />
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-light">Subscribe Now</button>
+                <button type="submit" class="btn btn-light">Subscribe Now <i class="fas fa-envelope-open-text ms-2"></i></button>
             </div>
         </form>
     </div>
@@ -563,10 +723,10 @@
                 <h5>PlantNest</h5>
                 <p>Your sanctuary for exquisite plants and garden essentials. We bring nature to your doorstep.</p>
                 <div class="social-icons mt-3">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
             <div class="col-md-2 mb-4">
@@ -575,6 +735,7 @@
                     <li><a th:href="@{/}">Home</a></li>
                     <li><a th:href="@{/about}">About Us</a></li>
                     <li><a th:href="@{/contact}">Contact</a></li>
+                    <li><a th:href="@{/faq}">FAQs</a></li>
                 </ul>
             </div>
             <div class="col-md-3 mb-4">
@@ -588,9 +749,9 @@
             </div>
             <div class="col-md-3 mb-4">
                 <h5>Contact Us</h5>
-                <p>123 Green Avenue,<br>Jaipur, India</p>
-                <p>Email: info@plantnest.com</p>
-                <p>Phone: +91 99999999999</p>
+                <p><i class="fas fa-map-marker-alt me-2"></i>123 Green Avenue,<br>Jaipur, India</p>
+                <p><i class="fas fa-envelope me-2"></i>Email: info@plantnest.com</p>
+                <p><i class="fas fa-phone-alt me-2"></i>Phone: +91 99999999999</p>
             </div>
         </div>
         <div class="footer-bottom">
@@ -606,8 +767,8 @@
         const logoutAlert = document.getElementById("logoutAlert");
         if (logoutAlert) {
             setTimeout(() => {
-                logoutAlert.classList.add('d-none'); // Hide using Bootstrap's d-none
-            }, 3000);
+                logoutAlert.classList.add('d-none');
+            }, 4000); // Increased duration to 4 seconds
         }
 
         // Set Current Year in Footer
@@ -633,6 +794,16 @@
 
         fadeInSections.forEach(section => {
             sectionObserver.observe(section);
+        });
+
+        // Navbar shadow on scroll
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) { // Add shadow after scrolling 50px
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
         });
     });
 </script>

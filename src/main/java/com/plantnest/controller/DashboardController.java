@@ -52,7 +52,7 @@ public class DashboardController {
         model.addAttribute("user", user);
         model.addAttribute("cartCount", cartCount);
         model.addAttribute("query", query);
-        model.addAttribute("products", products);
+        model.addAttribute("plants", products); // <-- changed here
 
         return "dashboardView";
     }
