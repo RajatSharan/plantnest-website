@@ -18,9 +18,7 @@ import java.util.List;
 public class DataSeeder {
 
     @Bean
-    public CommandLineRunner seedData(UserRepository userRepo,
-                                      OrderRepository orderRepo,
-                                      ActivityRepository activityRepo) {
+    public CommandLineRunner seedData(UserRepository userRepo, OrderRepository orderRepo, ActivityRepository activityRepo) {
         return args -> {
             if (userRepo.count() == 0) {
                 User user = new User();
@@ -29,6 +27,9 @@ public class DataSeeder {
                 user.setPassword("$2a$10$6t2YnmWolbzRPG6i3dIUeegtxcU2eOcnqyaAeEj5xjHZhHKqcVozS"); // encoded "password"
                 user.setFirstName("John");
                 user.setLastName("Doe");
+                user.setRole("USER"); // Added missing field
+                user.setAddress("123 Main St, Anytown, USA"); // Added missing field
+                user.setPhoneNumber("555-123-4567"); // Added missing field
 
                 userRepo.save(user);
 

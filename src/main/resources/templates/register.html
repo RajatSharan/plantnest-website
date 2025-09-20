@@ -216,7 +216,7 @@
         <span th:text="${emailError}"></span>
     </div>
 
-    <form th:action="@{/register}" th:object="${user}" method="post">
+    <form th:action="@{/register}" th:object="${registrationRequest}" method="post">
         <div class="form-group form-group-animated">
             <input type="text" id="firstName" th:field="*{firstName}" class="form-control" placeholder=" " required aria-label="First Name">
             <label for="firstName">First Name</label>
@@ -253,7 +253,7 @@
             <i class="fas fa-lock input-icon"></i>
         </div>
         <div class="form-group form-group-animated">
-            <input type="password" id="confirmPassword" class="form-control" placeholder=" " required aria-label="Confirm Password">
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" placeholder=" " required aria-label="Confirm Password">
             <label for="confirmPassword">Confirm Password</label>
             <i class="fas fa-lock input-icon"></i>
             <div id="passwordMatchError" class="text-danger mt-1" style="display:none;">Passwords do not match.</div>

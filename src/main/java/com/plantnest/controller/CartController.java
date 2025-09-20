@@ -1,4 +1,3 @@
-// CartController.java
 package com.plantnest.controller;
 
 import com.plantnest.model.Plant;

@@ -63,11 +63,11 @@ public class AuthController {
         return "login";
     }
 
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new RegistrationRequest());
-        return "register";
-    }
+   @GetMapping("/register")
+public String showRegistrationForm(Model model) {
+    model.addAttribute("registrationRequest", new RegistrationRequest());
+    return "register";
+}
 
     @PostMapping("/register")
     public String registerUser(@Valid RegistrationRequest registrationRequest, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {

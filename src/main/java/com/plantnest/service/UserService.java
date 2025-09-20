@@ -35,6 +35,7 @@ public class UserService {
 
     /**
      * Handles new user registration from a registration form.
+     * This method has been updated to include all fields from the DTO.
      */
     @Transactional
     public User registerNewUser(RegistrationRequest request) {
@@ -42,6 +43,10 @@ public class UserService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setFirstName(request.getFirstName());   // <-- ADDED
+        user.setLastName(request.getLastName());     // <-- ADDED
+        user.setPhoneNumber(request.getPhoneNumber()); // <-- ADDED
+        user.setAddress(request.getAddress());       // <-- ADDED
         user.setRole("USER");
         return userRepository.save(user);
     }
