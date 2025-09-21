@@ -135,8 +135,8 @@ public class OrderController {
         model.addAttribute("user", user);
         model.addAttribute("query", "");
 
-        System.out.println("DEBUG: OrderController: Exiting viewMyOrders method, returning 'my-orders' view.");
-        return "my-orders";
+        System.out.println("DEBUG: OrderController: Exiting viewMyOrders method, returning 'orders' view.");
+        return "orders"; // <-- CHANGED THIS LINE
     }
 
     /**
@@ -188,9 +188,9 @@ public class OrderController {
      */
     @GetMapping("/order-confirmation")
     public String showOrderConfirmation(@AuthenticationPrincipal UserDetails userDetails,
-                                        @RequestParam("orderId") Long orderId,
-                                        Model model,
-                                        HttpServletRequest request) { // <-- ADDED HttpServletRequest
+                                         @RequestParam("orderId") Long orderId,
+                                         Model model,
+                                         HttpServletRequest request) { // <-- ADDED HttpServletRequest
         System.out.println("DEBUG: OrderController: Entering showOrderConfirmation method.");
         try {
             if (userDetails == null) {
