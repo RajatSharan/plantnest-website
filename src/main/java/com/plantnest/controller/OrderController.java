@@ -106,6 +106,20 @@ public class OrderController {
         // Assuming orderService.getOrdersByUser(user) fetches orders with their items and plants
         List<Order> orders = orderService.getOrdersByUser(user);
 
+        // ✅ FIX: Force the lazy collections to initialize before the session closes
+        if (orders != null) {
+            orders.forEach(order -> {
+                if (order.getOrderItems() != null) {
+                    order.getOrderItems().forEach(orderItem -> {
+                        if (orderItem.getPlant() != null) {
+                            orderItem.getPlant().getName(); // Forces the plant to be loaded
+                        }
+                    });
+                }
+            });
+        }
+
+
         if (orders == null) {
             orders = Collections.emptyList(); // Ensure orders list is never null for Thymeleaf
             System.out.println("DEBUG: OrderController: viewMyOrders - Orders list was null, initialized to empty list.");
@@ -135,8 +149,8 @@ public class OrderController {
         model.addAttribute("user", user);
         model.addAttribute("query", "");
 
-        System.out.println("DEBUG: OrderController: Exiting viewMyOrders method, returning 'orders' view.");
-        return "orders"; // <-- CHANGED THIS LINE
+        System.out.println("DEBUG: OrderController: Exiting viewMyOrders method, returning 'my-orders' view.");
+        return "my-orders";
     }
 
     /**
