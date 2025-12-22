@@ -519,7 +519,7 @@
                     <td>
                         <div class="d-flex align-items-center">
                             <!-- Add null checks for item.plant and item.plant.imageUrl -->
-                            <img th:if="${item.plant != null and item.plant.imageUrl != null}" th:src="@{${plant.imageUrl}}" class="img-thumbnail me-3" th:alt="${item.plant.name}">
+                            <img th:if="${item.plant != null and item.plant.imageUrl != null}" th:src="@{'/images/' + ${item.plant.imageUrl}}" class="img-thumbnail me-3" th:alt="${item.plant.name}">
                             <img th:unless="${item.plant != null and item.plant.imageUrl != null}" src="https://placehold.co/90x90/cccccc/000000?text=No+Image" class="img-thumbnail me-3" alt="No Image Available">
                             <div>
                                 <strong th:text="${item.plant != null ? item.plant.name : 'Unknown Plant'}">Plant Name</strong>
