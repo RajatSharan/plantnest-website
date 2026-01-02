@@ -1,7 +1,7 @@
 # 🌿 PlantNest — Cultivating Green Dreams, Delivered to Your Door!
 
 Welcome to **PlantNest**, your digital sanctuary where the vibrant essence of nature flourishes. 🏡✨  
-We've lovingly crafted a modern e-commerce platform to bring the calming beauty of the botanical world directly into your life.  
+We've lovingly crafted a modern e-commerce platform to bring the calming beauty of the botanical world directly into your life.
 
 From the gentle whisper of a peace lily to the resilient embrace of an outdoor oak, discover your next green companion — all through an experience as seamless and intuitive as nature's own rhythm. 🌱🛒
 
